@@ -1,0 +1,46 @@
+﻿@page
+
+@{
+    ViewData["Title"] = "Contacto";
+}
+
+<h2>Contacto</h2>
+
+<form id="contact-form">
+    <label>Nombre:</label>
+    <input type="text" name="from_name" required />
+    <br />
+
+    <label>Email:</label>
+    <input type="email" name="from_email" required />
+    <br />
+
+    <label>Mensaje:</label>
+    <textarea name="message" required></textarea>
+    <br />
+
+    <button type="submit">Enviar</button>
+</form>
+
+<p id="status"></p>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+    (function(){
+        emailjs.init("IVN9Fw1zYfqJsTPAX"); // <-- pon aquí tu Public Key
+    })();
+
+    document.getElementById("contact-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        emailjs.sendForm("service_kc1og4c", "template_68sxphs", this)
+        .then(() => {
+            document.getElementById("status").innerText = "Mensaje enviado correctamente";
+        }, (err) => {
+            document.getElementById("status").innerText = "Error al enviar el mensaje";
+            console.error(err);
+        });
+    });
+</script>

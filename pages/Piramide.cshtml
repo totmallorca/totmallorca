@@ -1,0 +1,217 @@
+﻿@page
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:wght@400;500&display=swap');
+
+    :root {
+        --gold-light: #E8C97A;
+        --col-homes: #1a4a2e;
+        --col-dones: #6b1a3a;
+        --bg: linear-gradient(160deg, #060e1c 0%, #0d1f3c 50%, #091528 100%);
+    }
+
+    body { background: var(--bg); font-family: 'EB Garamond', Georgia, serif; color: #e8dcc8; }
+
+    .page-wrap {
+        max-width: 980px;
+        margin: 22px auto;
+        padding: 24px;
+        border-radius: 6px;
+        background: rgba(6,14,28,0.45);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
+
+    .page-header { text-align:center; margin-bottom:12px; }
+    .page-header h1 { font-family:'Cinzel',serif; color:var(--gold-light); font-size:20px; margin-bottom:4px; }
+    .controls { display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; margin-bottom:14px; }
+    .year-btn { font-family:'Cinzel',serif; font-size:11px; padding:6px 10px; border-radius:4px; border:1px solid rgba(201,168,76,0.2); background:transparent; color:var(--gold-light); cursor:pointer;}
+    .back-link { display:inline-block; margin-bottom:10px; color:var(--gold-light); text-decoration:none; font-size:12px; border:1px solid rgba(201,168,76,0.2); padding:6px 10px; border-radius:4px; background:rgba(6,14,28,0.6); }
+
+    #chartWrap { background:linear-gradient(160deg,#060e1c,#0d1f3c); padding:12px; border-radius:6px; }
+    canvas { width:100% !important; height:640px !important; display:block; }
+    .totals { text-align:right; color:#b8a88a; font-family:'Cinzel',serif; margin-top:8px; font-size:12px; }
+</style>
+
+<div class="page-wrap">
+    <a href="/Estadisticas" class="back-link">← Tornar a Estadístiques</a>
+
+    <div class="page-header">
+        <h1>Pirámide de població — Interactiva</h1>
+        <div style="color:#b8a88a; font-size:13px;">Selecciona any i opcions. Homes a l'esquerra, Dones a la dreta.</div>
+    </div>
+
+    <div class="controls">
+        <label style="color:var(--gold-light);">Any:
+            <select id="yearSelect" style="margin-left:8px; padding:6px; background:transparent; color:#e8dcc8; border:1px solid rgba(255,255,255,0.06);">
+                <option value="2025" selected>2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+            </select>
+        </label>
+
+        <label style="color:var(--gold-light);">
+            <input id="normalize" type="checkbox" style="vertical-align:middle; margin-right:6px;"> Normalitzar (%)
+        </label>
+
+        <button id="downloadPng" class="year-btn">Descarregar PNG</button>
+    </div>
+
+    <div id="chartWrap">
+        <canvas id="piramideChart" aria-label="Pirámide de població interactiva" role="img"></canvas>
+    </div>
+    <div id="chartTotals" class="totals"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function(){
+  const labels = [
+    '0 – 4','5 – 9','10 – 14','15 – 19','20 – 24','25 – 29',
+    '30 – 34','35 – 39','40 – 44','45 – 49','50 – 54','55 – 59',
+    '60 – 64','65 – 69','70 – 74','75 – 79','80 – 84','85 – 89',
+    '90 – 94','95 – 99','100+'
+  ];
+
+  const dataByYear = {
+    '2025': {
+      male:   [19019,22915,25527,27529,29023,31145,33818,34670,38324,42245,40027,34681,28928,22813,18635,14996,9954,4493,2105,419,43],
+      female: [18091,21732,24104,25281,27400,30338,32825,33818,37530,40504,38768,34826,30492,25587,21325,18384,13432,8456,4852,1371,193]
+    },
+    '2024': {
+      male:   [19221,23387,25202,26954,28073,30198,33125,34424,38973,42644,38967,34226,27802,22177,18312,14877,9214,5114,1966,414,31],
+      female: [18352,21908,23755,24751,26611,29464,32471,33838,38184,40272,37826,34230,29352,24951,20842,18161,12404,8715,4800,1347,191]
+    },
+    '2023': {
+      male:   [19768,23425,25703,25851,26702,28570,32307,34010,39616,42176,38007,33239,26952,21442,18220,14311,8568,5177,1864,388,29],
+      female: [18948,21925,24175,23967,25275,28303,31828,33829,38594,39544,36879,33357,28479,23946,20896,17536,11488,8979,4579,1292,188]
+    },
+    '2022': {
+      male:   [20167,23422,25690,25158,25263,27794,31254,34325,40157,41567,36820,31933,26164,21387,17720,13893,8206,5136,1800,411,32],
+      female: [19229,22033,23904,23228,23917,27563,30991,33697,38590,38788,35645,32311,27729,23209,20394,16890,11186,9052,4514,1267,169]
+    },
+    '2021': {
+      male:   [20730,23800,25771,24351,25104,28646,31697,35758,41497,41166,36099,30962,25408,20900,17483,13110,8117,4961,1762,408,43],
+      female: [19795,22161,23947,22692,23758,28459,31413,34883,39134,38573,35060,31429,26993,22667,20067,15870,11289,8860,4428,1186,168]
+    }
+  };
+
+  const ctx = document.getElementById('piramideChart').getContext('2d');
+  const yearSelect = document.getElementById('yearSelect');
+  const normalizeCheckbox = document.getElementById('normalize');
+  const totalsEl = document.getElementById('chartTotals');
+  const downloadBtn = document.getElementById('downloadPng');
+
+  // compute absolute max
+  const allVals = [];
+  Object.values(dataByYear).forEach(y => { allVals.push(...y.male, ...y.female); });
+  const maxAll = Math.max(...allVals);
+  const roundMax = Math.ceil(maxAll / 1000) * 1000;
+
+  const config = {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Homes',
+          data: dataByYear['2025'].male.map(v => -v),
+          backgroundColor: '#1a4a2e',
+          borderRadius: 6
+        },
+        {
+          label: 'Dones',
+          data: dataByYear['2025'].female,
+          backgroundColor: '#6b1a3a',
+          borderRadius: 6
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          min: -roundMax,
+          max: roundMax,
+          ticks: {
+            callback: function(value) { return Math.abs(value).toLocaleString('es-ES'); },
+            color: '#d4c9b0'
+          },
+          grid: { color: 'rgba(255,255,255,0.04)' }
+        },
+        y: {
+          reverse: true,
+          ticks: { color: '#e8dcc8' },
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        legend: { labels: { color: '#E8C97A' } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const label = ctx.dataset.label || '';
+              const v = Math.abs(ctx.parsed.x);
+              return label + ': ' + Number(v).toLocaleString('es-ES');
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const chart = new Chart(ctx, config);
+
+  function renderTotals(year){
+    const m = dataByYear[year].male.reduce((a,b)=>a+b,0);
+    const f = dataByYear[year].female.reduce((a,b)=>a+b,0);
+    totalsEl.textContent = `Homes ${m.toLocaleString('es-ES')} · Dones ${f.toLocaleString('es-ES')} · Total ${ (m+f).toLocaleString('es-ES') }`;
+  }
+
+  function updateChart(year, normalize){
+    const m = dataByYear[year].male.slice();
+    const f = dataByYear[year].female.slice();
+
+    if (normalize) {
+      const total = m.reduce((a,b)=>a+b,0) + f.reduce((a,b)=>a+b,0);
+      chart.data.datasets[0].data = m.map(v => -(v/total*100));
+      chart.data.datasets[1].data = f.map(v => (v/total*100));
+      chart.options.scales.x.min = -50;
+      chart.options.scales.x.max = 50;
+      chart.options.plugins.tooltip.callbacks.label = function(ctx) {
+        const isMale = ctx.dataset.label === 'Homes';
+        const pct = Math.abs(ctx.parsed.x).toFixed(1) + '%';
+        const abs = (isMale ? dataByYear[year].male[ctx.dataIndex] : dataByYear[year].female[ctx.dataIndex]);
+        return ctx.dataset.label + ': ' + pct + ' (' + abs.toLocaleString('es-ES') + ')';
+      };
+    } else {
+      chart.data.datasets[0].data = m.map(v => -v);
+      chart.data.datasets[1].data = f;
+      chart.options.scales.x.min = -roundMax;
+      chart.options.scales.x.max = roundMax;
+      chart.options.plugins.tooltip.callbacks.label = function(ctx) {
+        const val = Math.abs(ctx.parsed.x);
+        return ctx.dataset.label + ': ' + Number(val).toLocaleString('es-ES');
+      };
+    }
+
+    chart.update();
+    renderTotals(year);
+  }
+
+  yearSelect.addEventListener('change', function(){ updateChart(this.value, normalizeCheckbox.checked); });
+  normalizeCheckbox.addEventListener('change', function(){ updateChart(yearSelect.value, this.checked); });
+
+  downloadBtn.addEventListener('click', function(){
+    const a = document.createElement('a');
+    a.href = chart.toBase64Image();
+    a.download = `piramide_${yearSelect.value}.png`;
+    a.click();
+  });
+
+  // init
+  updateChart('2025', false);
+})();
+</script>

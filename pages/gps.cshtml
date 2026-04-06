@@ -1,0 +1,281 @@
+﻿@page
+@model mallorca.Pages.gpsModel
+@{
+
+    ViewData["Title"] = "GPS";
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+    #map {
+        height: 100vh;
+        width: 75%;
+        float: right;
+    }
+
+    #panel {
+        width: 25%;
+        height: 100vh;
+        overflow-y: auto;
+        background: #f2f2f2;
+        padding: 10px;
+        float: left;
+    }
+
+    .step {
+        background: white;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        border-left: 5px solid #4CAF50;
+    }
+</style>
+
+<div id="panel">
+    <h3>Navegación</h3>
+    <label><b>Modo:</b></label><br>
+    <select id="modo" style="width:90%;padding:6px;margin-bottom:10px;">
+        <option value="driving">🚗 Coche</option>
+        <option value="cycling">🚲 Bici</option>
+        <option value="foot">🚶 A pie</option>
+    </select>
+    <input type="text" id="destino" placeholder="Escribe destino..." style="width:90%;padding:8px;">
+    <button onclick="buscarDestino()">Ir</button>
+    <p><b>Tiempo:</b> <span id="tiempo"></span></p>
+    <p><b>Distancia:</b> <span id="distancia"></span></p>
+
+    <h4>Instrucciones:</h4>
+    <div id="instructions"></div>
+</div>
+
+<div id="map" style="height:100vh"></div>
+
+<script>
+    let pasos = [];
+    let pasoActual = 0;
+    let navegando = false;
+    let ruta = null;
+
+    let destLatGlobal = null;
+    let destLonGlobal = null;
+    let ultimoRecalculo = 0;
+
+    let map = L.map("map").setView([40.4168, -3.7038], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19
+    }).addTo(map);
+
+    let userMarker = L.marker([0, 0]).addTo(map);
+
+        navigator.geolocation.watchPosition(function (pos) {
+        let lat = pos.coords.latitude;
+        let lon = pos.coords.longitude;
+        
+        map.setView([lat, lon], 16);
+        userMarker.setLatLng([lat, lon]);
+
+        if (ruta && destLatGlobal && destLonGlobal) {
+            trazarRuta(destLatGlobal, destLonGlobal);
+        }
+
+
+        if (!navegando || pasoActual >= pasos.length) return;
+
+        let paso = pasos[pasoActual];
+        let pLat = paso.maneuver.location[1];
+        let pLon = paso.maneuver.location[0];
+
+        let d = distancia(lat, lon, pLat, pLon);
+
+        if (d < 30) { // 30 metros
+            hablar(generarInstruccion(paso.maneuver));
+            pasoActual++;
+        }
+    });
+
+
+    // -----------------------------
+    // 1️⃣ Buscar dirección en Nominatim
+    // -----------------------------
+    function buscarDestino() {
+        let texto = document.getElementById("destino").value;
+        if (texto.length < 3) return;
+
+        fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + texto)
+            .then(res => res.json())
+            .then(data => {
+                if (data.length === 0) {
+                    alert("Destino no encontrado");
+                    return;
+                }
+
+                destLatGlobal = parseFloat(data[0].lat);
+                destLonGlobal = parseFloat(data[0].lon);
+
+                // mostrar marcador del destino
+                L.marker([destLatGlobal, destLonGlobal]).addTo(map);
+
+                // trazar ruta
+                trazarRuta(destLatGlobal, destLonGlobal);
+            });
+    }
+
+
+    // -----------------------------
+    // 2️⃣ Trazar ruta con OSRM
+    // -----------------------------
+    function trazarRuta(destLat, destLon) {
+        navigator.geolocation.getCurrentPosition(function (pos) {
+
+            let userLat = pos.coords.latitude;
+            let userLon = pos.coords.longitude;
+            
+            let modo = document.getElementById("modo").value;
+
+            const url = `https://router.project-osrm.org/route/v1/${modo}/${userLon},${userLat};${destLon},${destLat}?overview=full&geometries=geojson&steps=true`;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    
+                    if (!data.routes || data.routes.length === 0) return;
+
+                    let route = data.routes[0];
+
+                    document.getElementById("tiempo").innerText =
+                        Math.round(route.duration / 60) + " min";
+
+                    document.getElementById("distancia").innerText =
+                        (route.distance / 1000).toFixed(1) + " km";
+
+                    if (ruta) map.removeLayer(ruta);
+
+                    let latlngs = route.geometry.coordinates.map(c => [c[1], c[0]]);
+                    ruta = L.polyline(latlngs, { weight: 5 }).addTo(map);
+
+                    map.fitBounds(ruta.getBounds());
+
+                    // Mostrar instrucciones
+                    mostrarInstrucciones(data.routes[0].legs[0].steps);
+                });
+        });
+    }
+
+    function generarInstruccion(m) {
+        let tipo = m.type;
+        let mod = m.modifier || "";
+
+        // Traducción del modificador
+        const modES = {
+            "left": "a la izquierda",
+            "right": "a la derecha",
+            "straight": "recto",
+            "slight left": "levemente a la izquierda",
+            "slight right": "levemente a la derecha",
+            "sharp left": "bruscamente a la izquierda",
+            "sharp right": "bruscamente a la derecha",
+            "uturn": "en U"
+        }[mod] || "";
+
+        switch (tipo) {
+
+            case "depart":
+                return "Comienza a conducir";
+
+            case "arrive":
+                return "Has llegado a tu destino";
+
+            case "turn":
+                return `Gira ${modES}`;
+
+            case "new name":
+                return "Continúa por la misma vía";
+
+            case "merge":
+                return "Incorpórate a la vía";
+
+            case "on ramp":
+                return "Entra en la vía";
+
+            case "off ramp":
+                return "Sal de la vía";
+
+            case "fork":
+                return `Mantente ${modES}`;
+
+            case "continue":
+                return "Continúa recto";
+
+            case "end of road":
+                return `Al final de la vía, gira ${modES}`;
+
+            case "roundabout":
+                return "Entra en la rotonda";
+
+            case "exit roundabout":
+                return "Sal de la rotonda";
+
+            case "roundabout turn":
+                return `En la rotonda, gira ${modES}`;
+
+            default:
+                return "Continúa";
+        }
+    }
+    function mostrarInstrucciones(steps) {
+        pasos = steps;
+        pasoActual = 0;
+        navegando = true;
+
+        let cont = document.getElementById("instructions");
+        cont.innerHTML = "";
+
+        steps.forEach((step, i) => {
+            let div = document.createElement("div");
+            div.className = "step";
+
+            let texto = generarInstruccion(step.maneuver);
+
+            div.innerHTML = `
+                <b>${i + 1}. ${texto}</b><br>
+                <small>${(step.distance / 1000).toFixed(2)} km</small>
+            `;
+        cont.appendChild(div);
+        });
+        // habla el primer paso
+        hablar(generarInstruccion(steps[0].maneuver));
+    }
+
+    function hablar(texto) {
+        if (!texto) return;
+
+        speechSynthesis.cancel();
+        let msg = new SpeechSynthesisUtterance(texto);
+        msg.lang = "es-ES";
+        msg.rate = 1;
+        msg.pitch = 1;
+        speechSynthesis.speak(msg);
+    }
+
+        
+    function distancia(lat1, lon1, lat2, lon2) {
+        const R = 6371000;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a =
+            Math.sin(dLat / 2) ** 2 +
+            Math.cos(lat1 * Math.PI / 180) *
+            Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) ** 2;
+
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+
+</script>
+
+

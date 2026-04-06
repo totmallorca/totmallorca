@@ -1,0 +1,379 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Tot Mallorca";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+
+    :root {
+        --gold: #C9A84C;
+        --gold-light: #E8C97A;
+        --gold-dark: #8B6914;
+        --crimson: #8B1A1A;
+        --crimson-light: #C0392B;
+        --deep-blue: #0A1628;
+        --cream: #F5EDD6;
+        --text-light: #F0E6CC;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        height: 100%; width: 100%;
+        overflow: hidden;
+        background-color: var(--deep-blue);
+        font-family: 'EB Garamond', Georgia, serif;
+        color: var(--text-light);
+    }
+
+    /* ── BACKGROUND ── */
+    .page-bg {
+        position: fixed; inset: 0; z-index: 0;
+        background:
+            radial-gradient(ellipse at 20% 50%, rgba(27,108,168,0.18) 0%, transparent 60%),
+            radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.10) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 100%, rgba(139,26,26,0.15) 0%, transparent 60%),
+            linear-gradient(160deg, #060e1c 0%, #0d1f3c 40%, #091528 100%);
+    }
+    .stars { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+    .stars::before, .stars::after {
+        content: ''; position: absolute; inset: 0;
+        background-image:
+            radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+            radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 40% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+            radial-gradient(1px 1px at 60% 30%, rgba(255,255,255,0.3) 0%, transparent 100%),
+            radial-gradient(1px 1px at 75% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 88% 12%, rgba(255,255,255,0.4) 0%, transparent 100%),
+            radial-gradient(1px 1px at 5% 80%, rgba(255,255,255,0.4) 0%, transparent 100%),
+            radial-gradient(1px 1px at 50% 90%, rgba(255,255,255,0.3) 0%, transparent 100%);
+        animation: twinkle 6s ease-in-out infinite alternate;
+    }
+    .stars::after {
+        background-image:
+            radial-gradient(1px 1px at 15% 25%, rgba(255,255,255,0.3) 0%, transparent 100%),
+            radial-gradient(1px 1px at 35% 65%, rgba(255,255,255,0.5) 0%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 55% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+            radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+            radial-gradient(1px 1px at 95% 50%, rgba(255,255,255,0.4) 0%, transparent 100%);
+        animation-delay: 3s;
+    }
+    @@keyframes twinkle { 0% { opacity: 0.6; } 100% { opacity: 1; } }
+
+    /* ═══════════════════════════════════════
+       HERO — logo+título en fila, poema centrado
+       ═══════════════════════════════════════ */
+    .hero {
+        position: relative; z-index: 1;
+        width: 100%; height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        padding: 52px 40px 16px;
+    }
+
+    /* FILA: logo | separador vertical | título */
+    .hero-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 22px;
+        flex-shrink: 0;
+    }
+
+    /* Logo */
+    .logo-container {
+        position: relative;
+        width: clamp(100px, 12vw, 160px);
+        flex-shrink: 0;
+        animation: fadeUp 1.4s 0.2s ease both;
+    }
+    @@keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px) scale(0.92); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .logo-glow {
+        position: absolute; inset: -14px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(201,168,76,0.2) 0%, transparent 70%);
+        animation: pulse 4s ease-in-out infinite;
+    }
+    @@keyframes pulse {
+        0%, 100% { transform: scale(0.95); opacity: 0.6; }
+        50%       { transform: scale(1.05); opacity: 1; }
+    }
+    .logo-container img {
+        width: 100%; height: auto; position: relative; z-index: 1;
+        filter: drop-shadow(0 6px 24px rgba(0,0,0,0.7)) drop-shadow(0 0 14px rgba(201,168,76,0.3));
+        transition: transform 0.6s ease;
+    }
+    .logo-container:hover img { transform: scale(1.05) rotate(1deg); }
+
+    /* Separador vertical */
+    .header-divider {
+        width: 1px; height: 70px; flex-shrink: 0;
+        background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+        opacity: 0.4;
+    }
+
+    /* Bloque título */
+    .hero-title-block {
+        display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+        animation: fadeDown 1.2s ease forwards;
+    }
+    @@keyframes fadeDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .main-title {
+        font-family: 'Cinzel Decorative', serif;
+        font-size: clamp(22px, 3vw, 48px);
+        font-weight: 900; line-height: 1; letter-spacing: 0.05em;
+    }
+    .title-t   { color: #6B5CE7;             text-shadow: 0 0 40px rgba(107,92,231,0.6),  0 2px 4px rgba(0,0,0,0.8); }
+    .title-ot  { color: var(--gold-light);    text-shadow: 0 0 40px rgba(232,201,122,0.6), 0 2px 4px rgba(0,0,0,0.8); }
+    .title-m   { color: var(--crimson-light); text-shadow: 0 0 40px rgba(192,57,43,0.6),   0 2px 4px rgba(0,0,0,0.8); }
+    .title-al  { color: var(--gold-light);    text-shadow: 0 0 40px rgba(232,201,122,0.6), 0 2px 4px rgba(0,0,0,0.8); }
+    .title-l   { color: var(--crimson-light); text-shadow: 0 0 40px rgba(192,57,43,0.6),   0 2px 4px rgba(0,0,0,0.8); }
+    .title-or  { color: var(--gold-light);    text-shadow: 0 0 40px rgba(232,201,122,0.6), 0 2px 4px rgba(0,0,0,0.8); }
+    .title-c   { color: var(--crimson-light); text-shadow: 0 0 40px rgba(192,57,43,0.6),   0 2px 4px rgba(0,0,0,0.8); }
+    .title-a   { color: var(--gold-light);    text-shadow: 0 0 40px rgba(232,201,122,0.6), 0 2px 4px rgba(0,0,0,0.8); }
+    .subtitle {
+        font-family: 'Cinzel', serif; font-size: clamp(9px, 1vw, 13px);
+        letter-spacing: 0.35em; color: rgba(201,168,76,0.7); text-transform: uppercase;
+    }
+    .ornament { font-size: 12px; color: var(--gold); opacity: 0.6; letter-spacing: 6px; margin-top: 2px; }
+
+    /* Poema */
+    .hero-poem {
+        flex-shrink: 0;
+        max-width: 480px;
+        width: 90%;
+        animation: fadeUp 1.4s 0.5s ease both;
+    }
+    .poem-box {
+        background: rgba(6,14,28,0.65); backdrop-filter: blur(16px);
+        border: 1px solid rgba(201,168,76,0.3); border-radius: 2px;
+        padding: 12px 44px; position: relative; text-align: center;
+    }
+    .poem-box::before { content: '✦'; position: absolute; top: 8px;    left: 10px;  color: var(--gold); font-size: 11px; opacity: 0.5; }
+    .poem-box::after  { content: '✦'; position: absolute; bottom: 8px; right: 10px; color: var(--gold); font-size: 11px; opacity: 0.5; }
+    .poem-header {
+        font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em;
+        text-transform: uppercase; color: var(--gold);
+        margin-bottom: 6px; padding-bottom: 5px;
+        border-bottom: 1px solid rgba(201,168,76,0.2);
+    }
+    .poem-lines { list-style: none; }
+    .poem-lines li {
+        font-family: 'EB Garamond', Georgia, serif;
+        font-size: clamp(13px, 1.3vw, 16px);
+        line-height: 1.6; color: var(--cream); font-style: italic;
+    }
+    .poem-lines li.gap { margin-top: 6px; }
+    .poem-author {
+        font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em;
+        color: rgba(201,168,76,0.55); text-align: right;
+        margin-top: 6px; padding-top: 5px;
+        border-top: 1px solid rgba(201,168,76,0.15);
+    }
+
+    /* ══════════════════════════════
+       TOP NAV — arriba centrado
+       ══════════════════════════════ */
+    .top-nav {
+        position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+        z-index: 200; display: flex; padding: 10px 0 0;
+        white-space: nowrap;
+    }
+    .top-nav a {
+        font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--gold-light); text-decoration: none;
+        padding: 8px 16px; border: 1px solid rgba(201,168,76,0.25); border-right: none;
+        background: rgba(6,14,28,0.85); backdrop-filter: blur(10px);
+        transition: all 0.3s ease; cursor: pointer;
+    }
+    .top-nav a:first-child { border-radius: 4px 0 0 4px; }
+    .top-nav a:last-child  { border-right: 1px solid rgba(201,168,76,0.25); border-radius: 0 4px 4px 0; }
+    .top-nav a:hover { background: rgba(201,168,76,0.18); color: #fff; border-color: var(--gold); }
+    .top-nav a.gps-link { color: #7ec8e3; }
+    .top-nav a.gps-link:hover { background: rgba(126,200,227,0.12); color: #fff; border-color: #7ec8e3; }
+
+    /* ── BARRA TOP ── */
+    .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 100;
+               background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.5; }
+
+    /* ══════════════════════════════
+       SUBMENU — desplegable desde arriba
+       ══════════════════════════════ */
+    .submenu-panel {
+        position: fixed; top: 40px; left: 50%; transform: translateX(-50%);
+        z-index: 190;
+        background: rgba(6,14,28,0.96); backdrop-filter: blur(16px);
+        border: 1px solid rgba(201,168,76,0.3); border-radius: 0 0 6px 6px;
+        padding: 10px 0; display: none;
+        columns: 4; column-gap: 0;
+        max-width: 800px; width: 90vw;
+        max-height: 50vh; overflow-y: auto;
+        scrollbar-width: thin; scrollbar-color: var(--gold-dark) transparent;
+    }
+    .submenu-panel.single-col { columns: 1; min-width: 220px; width: auto; }
+    .submenu-panel::-webkit-scrollbar { width: 4px; }
+    .submenu-panel::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+    .submenu-panel a {
+        display: block; font-family: 'Cinzel', serif; font-size: 10.5px;
+        letter-spacing: 0.07em; color: var(--cream); text-decoration: none;
+        padding: 5px 18px; transition: all 0.2s ease;
+        border-left: 2px solid transparent; break-inside: avoid;
+    }
+    .submenu-panel a:hover { background: rgba(201,168,76,0.12); color: var(--gold-light);
+                             border-left-color: var(--gold); padding-left: 22px; }
+
+</style>
+
+<div class="page-bg"></div>
+<div class="stars"></div>
+<div class="top-bar"></div>
+
+<!-- NAV: tots els links junts arriba -->
+<nav class="top-nav">
+    <a href="/About">Aquesta pàgina</a>
+    <a href="/Contact">Contacta</a>
+    <a href="/Chat">Chat</a>
+    <a onclick="toggleSubmenu('submenu1'); return false;">⚜ Pobles</a>
+    <a onclick="toggleSubmenu('submenu2'); return false;">⚜ Estadístiques</a>
+    <a onclick="toggleSubmenu('submenu3'); return false;">📜 Història</a>
+    <a href="/GPS" class="gps-link">📍 GPS</a>
+</nav>
+
+<!-- Submenu Pobles -->
+<div id="submenu1" class="submenu-panel">
+    <a href="@Url.Page("/Pobles/Alaró")">Alaró</a>
+    <a href="@Url.Page("/Pobles/Alcudia")">Alcudia</a>
+    <a href="@Url.Page("/Pobles/Algaida")">Algaida</a>
+    <a href="@Url.Page("/Pobles/Andratx")">Andratx</a>
+    <a href="@Url.Page("/Pobles/Ariany")">Ariany</a>
+    <a href="@Url.Page("/Pobles/Arta")">Artà</a>
+    <a href="@Url.Page("/Pobles/Banyalbufar")">Banyalbufar</a>
+    <a href="@Url.Page("/Pobles/Binissalem")">Binissalem</a>
+    <a href="@Url.Page("/Pobles/Buger")">Búger</a>
+    <a href="@Url.Page("/Pobles/Bunyola")">Bunyola</a>
+    <a href="@Url.Page("/Pobles/Calvià")">Calvià</a>
+    <a href="@Url.Page("/Pobles/Campanet")">Campanet</a>
+    <a href="@Url.Page("/Pobles/Campos")">Campos</a>
+    <a href="@Url.Page("/Pobles/Capdepera")">Capdepera</a>
+    <a href="@Url.Page("/Pobles/Consell")">Consell</a>
+    <a href="@Url.Page("/Pobles/Costitx")">Costitx</a>
+    <a href="@Url.Page("/Pobles/Deia")">Deià</a>
+    <a href="@Url.Page("/Pobles/Escorca")">Escorca</a>
+    <a href="@Url.Page("/Pobles/Esporles")">Esporles</a>
+    <a href="@Url.Page("/Pobles/Estellencs")">Estellencs</a>
+    <a href="@Url.Page("/Pobles/Felanitx")">Felanitx</a>
+    <a href="@Url.Page("/Pobles/Fornalutx")">Fornalutx</a>
+    <a href="@Url.Page("/Pobles/Inca")">Inca</a>
+    <a href="@Url.Page("/Pobles/Lloret")">Lloret de Vistalegre</a>
+    <a href="@Url.Page("/Pobles/Lloseta")">Lloseta</a>
+    <a href="@Url.Page("/Pobles/Llubi")">Llubí</a>
+    <a href="@Url.Page("/Pobles/Llucmajor")">Llucmajor</a>
+    <a href="@Url.Page("/Pobles/Manacor")">Manacor</a>
+    <a href="@Url.Page("/Pobles/Mancor")">Mancor de la Vall</a>
+    <a href="@Url.Page("/Pobles/Maria")">Maria de la Salut</a>
+    <a href="@Url.Page("/Pobles/Marratxi")">Marratxí</a>
+    <a href="@Url.Page("/Pobles/Montuiri")">Montuiri</a>
+    <a href="@Url.Page("/Pobles/Muro")">Muro</a>
+    <a href="@Url.Page("/Pobles/Palma")">Palma</a>
+    <a href="@Url.Page("/Pobles/Petra")">Petra</a>
+    <a href="@Url.Page("/Pobles/Pollença")">Pollença</a>
+    <a href="@Url.Page("/Pobles/Porreres")">Porreres</a>
+    <a href="@Url.Page("/Pobles/Puigpunyent")">Puigpunyent</a>
+    <a href="@Url.Page("/Pobles/Pobla")">Sa Pobla</a>
+    <a href="@Url.Page("/Pobles/Joan")">Sant Joan</a>
+    <a href="@Url.Page("/Pobles/Cardassar")">Sant Llorenç des Cardassar</a>
+    <a href="@Url.Page("/Pobles/Eugenia")">Santa Eugènia</a>
+    <a href="@Url.Page("/Pobles/Margalida")">Santa Margalida</a>
+    <a href="@Url.Page("/Pobles/StaMaria")">Santa Maria del Camí</a>
+    <a href="@Url.Page("/Pobles/Santanyi")">Santanyí</a>
+    <a href="@Url.Page("/Pobles/Selva")">Selva</a>
+    <a href="@Url.Page("/Pobles/Sencelles")">Sencelles</a>
+    <a href="@Url.Page("/Pobles/Salines")">Ses Salines</a>
+    <a href="@Url.Page("/Pobles/Sineu")">Sineu</a>
+    <a href="@Url.Page("/Pobles/Soller")">Sóller</a>
+    <a href="@Url.Page("/Pobles/Servera")">Son Servera</a>
+    <a href="@Url.Page("/Pobles/Valldemossa")">Valldemossa</a>
+    <a href="@Url.Page("/Pobles/Villafranca")">Villafranca de Bonany</a>
+</div>
+
+<!-- Submenu Estadístiques -->
+<div id="submenu2" class="submenu-panel single-col">
+    <a href="@Url.Page("/Estadisticas")">Població resident</a>
+</div>
+
+<!-- Submenu Història -->
+<div id="submenu3" class="submenu-panel single-col">
+    <a href="@Url.Page("/Historia/EpocaTalayotica")">Era Talaiòtica</a>
+</div>
+
+<!-- HERO -->
+<main class="hero">
+
+        <!-- FILA: logo | separador | título -->
+    <div class="hero-header">
+        <div class="logo-container">
+            <div class="logo-glow"></div>
+            <img src="~/images/tot_mallorca_logo.png" alt="Tot Mallorca" />
+        </div>
+        <div class="header-divider"></div>
+        <div class="hero-title-block">
+            <div class="main-title" aria-label="Tot Mallorca">
+                <span class="title-t">T</span><span class="title-ot">OT</span><span class="title-m"> M</span><span class="title-al">AL</span><span class="title-l">L</span><span class="title-or">OR</span><span class="title-c">C</span><span class="title-a">A</span>
+            </div>
+            <p class="subtitle">Sa Roqueta a ses teves màns</p>
+            <p class="ornament">— ✦ —</p>
+        </div>
+    </div>
+
+    <!-- POEMA centrado, una columna -->
+    <div class="hero-poem">
+        <div class="poem-box">
+            <p class="poem-header">Ai! Mallorca el cor m'encises</p>
+            <ul class="poem-lines">
+                <li>Ai! Mallorca el cor m'encises</li>
+                <li>Amb ton blau del cel tan bell</li>
+                <li>Amb tes platjes remoroses</li>
+                <li>Que escomou l'ambat lleuger</li>
+                <li>Amb les flors de tes praderes</li>
+                <li>Amb lo cant de los aucells</li>
+                <li>De los cel é el paradis</li>
+                <li>Per a mi semblança n'ets</li>
+                <li class="gap">Ai! Mallorca si te deixo,</li>
+                <li>D'anyorança moriré.</li>
+                <li>Bella terra n'es Mallorca,</li>
+                <li>Q'es Mallorca ric verger.</li>
+            </ul>
+            <p class="poem-author">— Tomàs Forteza</p>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    function toggleSubmenu(id) {
+        const panel = document.getElementById(id);
+        const allPanels = document.querySelectorAll('.submenu-panel');
+        if (panel.style.display === 'block') {
+            panel.style.display = 'none';
+        } else {
+            allPanels.forEach(p => p.style.display = 'none');
+            panel.style.display = 'block';
+        }
+    }
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.top-nav') && !e.target.closest('.submenu-panel')) {
+            document.querySelectorAll('.submenu-panel').forEach(p => p.style.display = 'none');
+        }
+    });
+</script>

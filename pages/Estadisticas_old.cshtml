@@ -1,0 +1,416 @@
+@page
+@model mallorca.Pages.EstadisticasModel
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:wght@400;500&display=swap');
+
+    :root {
+        --gold: #C9A84C;
+        --gold-light: #E8C97A;
+        --gold-dark: #8B6914;
+        --crimson: #8B1A1A;
+        --deep-blue: #0A1628;
+        --cream: #F5EDD6;
+        --col-total: #1a3a5c;
+        --col-homes: #1a4a2e;
+        --col-dones: #6b1a3a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+        min-height: 100% !important;
+        background: linear-gradient(160deg, #060e1c 0%, #0d1f3c 50%, #091528 100%);
+        background-attachment: fixed;
+        font-family: 'EB Garamond', Georgia, serif;
+        color: #e8dcc8;
+    }
+
+    /* ── PAGE ── */
+    .page-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 28px 24px 40px;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+        text-align: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(201,168,76,0.3);
+        position: relative;
+    }
+    .page-header::after {
+        content: '';
+        position: absolute; bottom: -1px; left: 20%; right: 20%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .page-header h1 {
+        font-family: 'Cinzel', serif;
+        font-size: clamp(20px, 3vw, 32px);
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--gold-light);
+        text-shadow: 0 0 20px rgba(201,168,76,0.3);
+    }
+    .page-header h2 {
+        font-family: 'Cinzel', serif;
+        font-size: clamp(11px, 1.3vw, 14px);
+        letter-spacing: 0.3em;
+        color: rgba(201,168,76,0.6);
+        font-weight: 400;
+        margin-top: 6px;
+        text-transform: uppercase;
+    }
+    .ornament { color: var(--gold); opacity: 0.5; font-size: 14px; letter-spacing: 8px; margin-top: 8px; }
+
+    /* ── YEAR SELECTOR ── */
+    .year-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .year-controls label {
+        font-family: 'Cinzel', serif;
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gold-light);
+        opacity: 0.8;
+    }
+    .year-btn {
+        font-family: 'Cinzel', serif;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        padding: 6px 14px;
+        border: 1px solid rgba(201,168,76,0.3);
+        background: rgba(6,14,28,0.6);
+        color: var(--gold-light);
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .year-btn:hover, .year-btn.active {
+        background: rgba(201,168,76,0.18);
+        border-color: var(--gold);
+        color: #fff;
+    }
+    .year-btn.active { font-weight: 700; }
+
+    /* ── TABLE WRAPPER ── */
+    .table-wrap {
+        overflow-x: auto;
+        border-radius: 4px;
+        border: 1px solid rgba(201,168,76,0.2);
+        box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    }
+    .table-wrap::-webkit-scrollbar { height: 5px; }
+    .table-wrap::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: clamp(11px, 1.1vw, 13px);
+    }
+
+    /* ── SECTION HEADERS ── */
+    .th-group {
+        font-family: 'Cinzel', serif;
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        padding: 10px 8px 6px;
+        text-align: center;
+        color: #fff;
+        border-bottom: 2px solid rgba(255,255,255,0.15);
+    }
+    .th-group.total { background: var(--col-total); }
+    .th-group.homes { background: var(--col-homes); }
+    .th-group.dones { background: var(--col-dones); }
+
+    /* ── YEAR SUBHEADERS ── */
+    thead tr.subhead th {
+        font-family: 'Cinzel', serif;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        padding: 6px 10px;
+        text-align: right;
+        color: rgba(255,255,255,0.85);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        white-space: nowrap;
+    }
+    .th-age { text-align: left !important; color: var(--gold-light) !important; background: rgba(6,14,28,0.8) !important; min-width: 120px; }
+    .th-y.total { background: rgba(26,58,92,0.9); }
+    .th-y.homes { background: rgba(26,74,46,0.9); }
+    .th-y.dones { background: rgba(107,26,58,0.9); }
+
+    /* ── DATA ROWS ── */
+    tbody tr {
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        transition: background 0.15s ease;
+    }
+    tbody tr:hover { background: rgba(201,168,76,0.07); }
+    tbody tr.total-row { border-top: 2px solid rgba(201,168,76,0.3); background: rgba(201,168,76,0.06); }
+    tbody tr.total-row td { font-weight: 600; color: var(--gold-light); }
+
+    td {
+        padding: 5px 10px;
+        text-align: right;
+        color: #d4c9b0;
+        font-size: clamp(11px, 1vw, 13px);
+        white-space: nowrap;
+    }
+    td.age-label {
+        text-align: left;
+        font-family: 'EB Garamond', serif;
+        color: #b8a88a;
+        background: rgba(6,14,28,0.5);
+        padding-left: 14px;
+        font-size: clamp(11px, 1vw, 13px);
+    }
+    td.total { background: rgba(26,58,92,0.25); }
+    td.homes { background: rgba(26,74,46,0.2); }
+    td.dones { background: rgba(107,26,58,0.2); }
+
+    /* hidden year columns */
+    .col-year { transition: opacity 0.3s ease; }
+    .col-year.hidden { display: none; }
+
+    /* ── FOOTER ── */
+    .table-footer {
+        text-align: right;
+        margin-top: 14px;
+        font-family: 'Cinzel', serif;
+        font-size: 10px;
+        letter-spacing: 0.15em;
+        color: rgba(201,168,76,0.45);
+        text-transform: uppercase;
+    }
+
+    /* ── BACK LINK ── */
+    .back-link {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.15em;
+        text-transform: uppercase; color: var(--gold-light); text-decoration: none;
+        padding: 7px 16px; border: 1px solid rgba(201,168,76,0.25);
+        border-radius: 2px; background: rgba(6,14,28,0.6); backdrop-filter: blur(8px);
+        transition: all 0.2s ease; margin-bottom: 18px; display: inline-block;
+    }
+    .back-link:hover { background: rgba(201,168,76,0.12); border-color: var(--gold); color: #fff; }
+</style>
+
+<div class="page-wrap">
+
+    <a href="javascript:history.back()" class="back-link">← Tornar</a>
+
+    <div class="page-header">
+        <h1>Població Resident</h1>
+        <h2>per sexe i grup d'edat · Illa de Mallorca</h2>
+        <div class="ornament">✦</div>
+    </div>
+
+    <!-- Year filter buttons -->
+    <div class="year-controls">
+        <label>Mostrar anys:</label>
+        <button class="year-btn active" onclick="toogleYear('2025', this)">2025</button>
+        <button class="year-btn active" onclick="toggleYear('2024', this)">2024</button>
+        <button class="year-btn active" onclick="toggleYear('2023', this)">2023</button>
+        <button class="year-btn active" onclick="toggleYear('2022', this)">2022</button>
+        <button class="year-btn active" onclick="toggleYear('2021', this)">2021</button>
+    </div>
+
+    <div class="table-wrap">
+        <table id="stats-table">
+            <thead>
+                <tr>
+                    <th class="th-group" rowspan="2" style="text-align:left; background:rgba(6,14,28,0.8); color:var(--gold-light);">Grup d'edat</th>
+                    <th class="th-group total" colspan="5">Total</th>
+                    <th class="th-group homes" colspan="5">Homes</th>
+                    <th class="th-group dones" colspan="5">Dones</th>
+                </tr>
+                <tr class="subhead">
+                    <th class="th-y total col-year y2025">2025</th>
+                    <th class="th-y total col-year y2024">2024</th>
+                    <th class="th-y total col-year y2023">2023</th>
+                    <th class="th-y total col-year y2022">2022</th>
+                    <th class="th-y total col-year y2021">2021</th>
+                    <th class="th-y homes col-year y2025">2025</th>
+                    <th class="th-y homes col-year y2024">2024</th>
+                    <th class="th-y homes col-year y2023">2023</th>
+                    <th class="th-y homes col-year y2022">2022</th>
+                    <th class="th-y homes col-year y2021">2021</th>
+                    <th class="th-y dones col-year y2025">2025</th>
+                    <th class="th-y dones col-year y2024">2024</th>
+                    <th class="th-y dones col-year y2023">2023</th>
+                    <th class="th-y dones col-year y2022">2022</th>
+                    <th class="th-y dones col-year y2021">2021</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- === PARA AFEGIR UN NOU ANY: afegeix una nova columna <td> a cada fila === -->
+                <tr class="total-row">
+                    <td class="age-label">Total</td>
+                    <td class="total col-year y2025">971.068</td>
+                    <td class="total col-year y2024">957.726</td>
+                    <td class="total col-year y2023">940.332</td>
+                    <td class="total col-year y2022">922.605</td>
+                    <td class="total col-year y2021">920.605</td>
+                    <td class="homes col-year y2025">481.759</td>
+                    <td class="homes col-year y2024">475.301</td>
+                    <td class="homes col-year y2023">466.325</td>
+                    <td class="homes col-year y2022">458.299</td>
+                    <td class="homes col-year y2021">457.773</td>
+                    <td class="dones col-year y2025">489.309</td>
+                    <td class="dones col-year y2024">482.425</td>
+                    <td class="dones col-year y2023">474.007</td>
+                    <td class="dones col-year y2022">464.306</td>
+                    <td class="dones col-year y2021">462.832</td>
+                </tr>
+                <tr>
+                    <td class="age-label">0 – 4 anys</td>
+                    <td class="total col-year y2025">37.110</td><td class="total col-year y2024">37.573</td><td class="total col-year y2023">38.716</td><td class="total col-year y2022">39.396</td><td class="total col-year y2021">40.525</td>
+                    <td class="homes col-year y2025">19.019</td><td class="homes col-year y2024">19.221</td><td class="homes col-year y2023">19.768</td><td class="homes col-year y2022">20.167</td><td class="homes col-year y2021">20.730</td>
+                    <td class="dones col-year y2025">18.091</td><td class="dones col-year y2024">18.352</td><td class="dones col-year y2023">18.948</td><td class="dones col-year y2022">19.229</td><td class="dones col-year y2021">19.795</td>
+                </tr>
+                <tr>
+                    <td class="age-label">5 – 9 anys</td>
+                    <td class="total col-year y2025">44.647</td><td class="total col-year y2024">45.295</td><td class="total col-year y2023">45.350</td><td class="total col-year y2022">45.455</td><td class="total col-year y2021">45.961</td>
+                    <td class="homes col-year y2025">22.915</td><td class="homes col-year y2024">23.387</td><td class="homes col-year y2023">23.425</td><td class="homes col-year y2022">23.422</td><td class="homes col-year y2021">23.800</td>
+                    <td class="dones vol-year y2025">21.732</td><td class="dones col-year y2024">21.908</td><td class="dones col-year y2023">21.925</td><td class="dones col-year y2022">22.033</td><td class="dones col-year y2021">22.161</td>
+                </tr>
+                <tr>
+                    <td class="age-label">10 – 14 anys</td>
+                    <td class="total col-year y2025">49.631</td><td class="total col-year y2024">48.957</td><td class="total col-year y2023">49.878</td><td class="total col-year y2022">49.594</td><td class="total col-year y2021">49.718</td>
+                    <td class="homes col-year y2025">25.527</td><td class="homes col-year y2024">25.202</td><td class="homes col-year y2023">25.703</td><td class="homes col-year y2022">25.690</td><td class="homes col-year y2021">25.771</td>
+                    <td class="dones col-year y2025">24.104</td><td class="dones col-year y2024">23.755</td><td class="dones col-year y2023">24.175</td><td class="dones col-year y2022">23.904</td><td class="dones col-year y2021">23.947</td>
+                </tr>
+                <tr>
+                    <td class="age-label">15 – 19 anys</td>
+                    <td class="total col-year y2025">52.810</td><td class="total col-year y2024">51.705</td><td class="total col-year y2023">49.818</td><td class="total col-year y2022">48.386</td><td class="total col-year y2021">47.043</td>
+                    <td class="homes col-year y2025">27.529</td><td class="homes col-year y2024">26.954</td><td class="homes col-year y2023">25.851</td><td class="homes col-year y2022">25.158</td><td class="homes col-year y2021">24.351</td>
+                    <td class="dones col-year y2025">25.281</td><td class="dones col-year y2024">24.751</td><td class="dones col-year y2023">23.967</td><td class="dones col-year y2022">23.228</td><td class="dones col-year y2021">22.692</td>
+                </tr>
+                <tr>
+                    <td class="age-label">20 – 24 anys</td>
+                    <td class="totsl col-year y2025">56.423</td><td class="total col-year y2024">54.684</td><td class="total col-year y2023">51.977</td><td class="total col-year y2022">49.180</td><td class="total col-year y2021">48.862</td>
+                    <td class="homes col-year y2025">29.023</td><td class="homes col-year y2024">28.073</td><td class="homes col-year y2023">26.702</td><td class="homes col-year y2022">25.263</td><td class="homes col-year y2021">25.104</td>
+                    <td class="dones col-year y2025">27.400</td><td class="dones col-year y2024">26.611</td><td class="dones col-year y2023">25.275</td><td class="dones col-year y2022">23.917</td><td class="dones col-year y2021">23.758</td>
+                </tr>
+                <tr>
+                    <td class="age-label">25 – 29 anys</td>
+                    <td class="totsl col-year y2025">61.483</td><td class="total col-year y2024">59.662</td><td class="total col-year y2023">56.873</td><td class="total col-year y2022">55.357</td><td class="total col-year y2021">57.105</td>
+                    <td class="homes col-year y2025">31.145</td><td class="homes col-year y2024">30.198</td><td class="homes col-year y2023">28.570</td><td class="homes col-year y2022">27.794</td><td class="homes col-year y2021">28.646</td>
+                    <td class="dones col-year y2025">30.338</td><td class="dones col-year y2024">29.464</td><td class="dones col-year y2023">28.303</td><td class="dones col-year y2022">27.563</td><td class="dones col-year y2021">28.459</td>
+                </tr>
+                <tr>
+                    <td class="age-label">30 – 34 anys</td>
+                    <td class="total col-year y2025">66.643</td><td class="total col-year y2024">65.596</td><td class="total col-year y2023">64.135</td><td class="total col-year y2022">62.245</td><td class="total col-year y2021">63.110</td>
+                    <td class="homes col-year y2025">33.818</td><td class="homes col-year y2024">33.125</td><td class="homes col-year y2023">32.307</td><td class="homes col-year y2022">31.254</td><td class="homes col-year y2021">31.697</td>
+                    <td class="dones col-year y2025">32.825</td><td class="dones col-year y2024">32.471</td><td class="dones col-year y2023">31.828</td><td class="dones col-year y2022">30.991</td><td class="dones col-year y2021">31.413</td>
+                </tr>
+                <tr>
+                    <td class="age-label">35 – 39 anys</td>
+                    <td class="total col-year y2025">68.488</td><td class="total col-year y2024">68.262</td><td class="total col-year y2023">67.839</td><td class="total col-year y2022">68.022</td><td class="total col-year y2021">70.641</td>
+                    <td class="homes col-year y2025">34.670</td><td class="homes col-year y2024">34.424</td><td class="homes col-year y2023">34.010</td><td class="homes col-year y2022">34.325</td><td class="homes col-year y2021">35.758</td>
+                    <td class="dones col-year y2025">33.818</td><td class="dones col-year y2024">33.838</td><td class="dones col-year y2023">33.829</td><td class="dones col-year y2022">33.697</td><td class="dones col-year y2021">34.883</td>
+                </tr>
+                <tr>
+                    <td class="age-label">40 – 44 anys</td>
+                    <td class="total col-year y2025">75.854</td><td class="total col-year y2024">77.157</td><td class="total col-year y2023">78.210</td><td class="total col-year y2022">78.747</td><td class="total col-year y2021">80.631</td>
+                    <td class="homes col-year y2025">38.324</td><td class="homes col-year y2024">38.973</td><td class="homes col-year y2023">39.616</td><td class="homes col-year y2022">40.157</td><td class="homes col-year y2021">41.497</td>
+                    <td class="dones col-year y2025">37.530</td><td class="dones col-year y2024">38.184</td><td class="dones col-year y2023">38.594</td><td class="dones col-year y2022">38.590</td><td class="dones col-year y2021">39.134</td>
+                </tr>
+                <tr>
+                    <td class="age-label">45 – 49 anys</td>
+                    <td class="total col-year y2025">82.749</td><td class="total col-year y2024">82.916</td><td class="total col-year y2023">81.720</td><td class="total col-year y2022">80.355</td><td class="total col-year y2021">79.739</td>
+                    <td class="homes col-year y2025">42.245</td><td class="homes col-year y2024">42.644</td><td class="homes col-year y2023">42.176</td><td class="homes col-year y2022">41.567</td><td class="homes col-year y2021">41.166</td>
+                    <td class="dones col-year y2025">40.504</td><td class="dones col-year y2024">40.272</td><td class="dones col-year y2023">39.544</td><td class="dones col-year y2022">38.788</td><td class="dones col-year y2021">38.573</td>
+                </tr>
+                <tr>
+                    <td class="age-label">50 – 54 anys</td>
+                    <td class="total col-year y2025">78.795</td><td class="total col-year y2024">76.793</td><td class="total col-year y2023">74.886</td><td class="total col-year y2022">72.465</td><td class="total col-year y2021">71.159</td>
+                    <td class="homes col-year y2025">40.027</td><td class="homes col-year y2024">38.967</td><td class="homes col-year y2023">38.007</td><td class="homes col-year y2022">36.820</td><td class="homes col-year y2021">36.099</td>
+                    <td class="dones col-year y2025">38.768</td><td class="dones col-year y2024">37.826</td><td class="dones col-year y2023">36.879</td><td class="dones col-year y2022">35.645</td><td class="dones col-year y2021">35.060</td>
+                </tr>
+                <tr>
+                    <td class="age-label">55 – 59 anys</td>
+                    <td class="total col-year y2025">69.507</td><td class="total col-year y2024">68.456</td><td class="total col-year y2023">66.596</td><td class="total col-year y2022">64.244</td><td class="total col-year y2021">62.391</td>
+                    <td class="homes col-year y2025">34.681</td><td class="homes col-year y2024">34.226</td><td class="homes col-year y2023">33.239</td><td class="homes col-year y2022">31.933</td><td class="homes col-year y2021">30.962</td>
+                    <td class="dones col-year y2025">34.826</td><td class="dones col-year y2024">34.230</td><td class="dones col-year y2023">33.357</td><td class="dones col-year y2022">32.311</td><td class="dones col-year y2021">31.429</td>
+                </tr>
+                <tr>
+                    <td class="age-label">60 – 64 anys</td>
+                    <td class="total col-year y2025">59.420</td><td class="total col-year y2024">57.154</td><td class="total col-year y2023">55.431</td><td class="total col-year y2022">53.893</td><td class="total col-year y2021">52.401</td>
+                    <td class="homes col-year y2025">28.928</td><td class="homes col-year y2024">27.802</td><td class="homes col-year y2023">26.952</td><td class="homes col-year y2022">26.164</td><td class="homes col-year y2021">25.408</td>
+                    <td class="dones col-year y2025">30.492</td><td class="dones col-year y2024">29.352</td><td class="dones col-year y2023">28.479</td><td class="dones col-year y2022">27.729</td><td class="dones col-year y2021">26.993</td>
+                </tr>
+                <tr>
+                    <td class="age-label">65 – 69 anys</td>
+                    <td class="total col-year y2025">48.400</td><td class="total col-year y2024">47.128</td><td class="total col-year y2023">45.388</td><td class="total col-year y2022">44.596</td><td class="total col-year y2021">43.567</td>
+                    <td class="homes col-year y2025">22.813</td><td class="homes col-year y2024">22.177</td><td class="homes col-year y2023">21.442</td><td class="homes col-year y2022">21.387</td><td class="homes col-year y2021">20.900</td>
+                    <td class="dones col-year y2025">25.587</td><td class="dones col-year y2024">24.951</td><td class="dones col-year y2023">23.946</td><td class="dones col-year y2022">23.209</td><td class="dones col-year y2021">22.667</td>
+                </tr>
+                <tr>
+                    <td class="age-label">70 – 74 anys</td>
+                    <td class="total col-year y2025">39.960</td><td class="total col-year y2024">39.154</td><td class="total col-year y2023">39.116</td><td class="total col-year y2022">38.114</td><td class="total col-year y2021">37.550</td>
+                    <td class="homes col-year y2025">18.635</td><td class="homes col-year y2024">18.312</td><td class="homes col-year y2023">18.220</td><td class="homes col-year y2022">17.720</td><td class="homes col-year y2021">17.483</td>
+                    <td class="dones col-year y2025">21.325</td><td class="dones col-year y2024">20.842</td><td class="dones col-year y2023">20.896</td><td class="dones col-year y2022">20.394</td><td class="dones col-year y2021">20.067</td>
+                </tr>
+                <tr>
+                    <td class="age-label">75 – 79 anys</td>
+                    <td class="total col-year y2025">33.380</td><td class="total col-year y2024">33.038</td><td class="total col-year y2023">31.847</td><td class="total col-year y2022">30.783</td><td class="total col-year y2021">28.980</td>
+                    <td class="homes col-year y2025">14.996</td><td class="homes col-year y2024">14.877</td><td class="homes col-year y2023">14.311</td><td class="homes col-year y2022">13.893</td><td class="homes col-year y2021">13.110</td>
+                    <td class="domes col-year y2025">18.384</td><td class="dones col-year y2024">18.161</td><td class="dones col-year y2023">17.536</td><td class="dones col-year y2022">16.890</td><td class="dones col-year y2021">15.870</td>
+                </tr>
+                <tr>
+                    <td class="age-label">80 – 84 anys</td>
+                    <td class="total col-year y2025">23.386</td><td class="total col-year y2024">21.618</td><td class="total col-year y2023">20.056</td><td class="total col-year y2022">19.392</td><td class="total col-year y2021">19.406</td>
+                    <td class="homes col-year y2025">9.954</td><td class="homes col-year y2024">9.214</td><td class="homes col-year y2023">8.568</td><td class="homes col-year y2022">8.206</td><td class="homes col-year y2021">8.117</td>
+                    <td class="dones col-year y2025">13.432</td><td class="dones col-year y2024">12.404</td><td class="dones col-year y2023">11.488</td><td class="dones col-year y2022">11.186</td><td class="dones col-year y2021">11.289</td>
+                </tr>
+                <tr>
+                    <td class="age-label">85 – 89 anys</td>
+                    <td class="total col-year y2025">13.399</td><td class="total col-year y2024">13.829</td><td class="total col-year y2023">14.156</td><td class="total col-year y2022">14.188</td><td class="total col-year y2021">13.821</td>
+                    <td class="homes col-year y2025">4.493</td><td class="homes col-year y2024">5.114</td><td class="homes col-year y2023">5.177</td><td class="homes col-year y2022">5.136</td><td class="homes col-year y2021">4.961</td>
+                    <td class="dones col-year y2025">8.456</td><td class="dones col-year y2024">8.715</td><td class="dones col-year y2023">8.979</td><td class="dones col-year y2022">9.052</td><td class="dones col-year y2021">8.860</td>
+                </tr>
+                <tr>
+                    <td class="age-label">90 – 94 anys</td>
+                    <td class="total col-year y2025">6.957</td><td class="total col-year y2024">6.766</td><td class="total col-year y2023">6.443</td><td class="total col-year y2022">6.314</td><td class="total col-year y2021">6.190</td>
+                    <td class="homes col-year y2025">2.105</td><td class="homes col-year y2024">1.966</td><td class="homes col-year y2023">1.864</td><td class="homes col-year y2022">1.800</td><td class="homes col-year y2021">1.762</td>
+                    <td class="dones col-year y2025">4.852</td><td class="dones col-year y2024">4.800</td><td class="dones col-year y2023">4.579</td><td class="dones col-year y2022">4.514</td><td class="dones col-year y2021">4.428</td>
+                </tr>
+                <tr>
+                    <td class="age-label">95 – 99 anys</td>
+                    <td class="total col-year y2025">1.790</td><td class="total col-year y2024">1.761</td><td class="total col-year y2023">1.680</td><td class="total col-year y2022">1.678</td><td class="total col-year y2021">1.594</td>
+                    <td class="homes col-year y2025">419</td><td class="homes col-year y2024">414</td><td class="homes col-year y2023">388</td><td class="homes col-year y2022">411</td><td class="homes col-year y2021">408</td>
+                    <td class="dones col-year y2025">1.371</td><td class="dones col-year y2024">1.347</td><td class="dones col-year y2023">1.292</td><td class="dones col-year y2022">1.267</td><td class="dones col-year y2021">1.186</td>
+                </tr>
+                <tr>
+                    <td class="age-label">100 anys o més</td>
+                    <td class="total col-year y2025">236</td><td class="total col-year y2024">222</td><td class="total col-year y2023">217</td><td class="total col-year y2022">201</td><td class="total col-year y2021">211</td>
+                    <td class="homes col-year y2025">43</td><td class="homes col-year y2024">31</td><td class="homes col-year y2023">29</td><td class="homes col-year y2022">32</td><td class="homes col-year y2021">43</td>
+                    <td class="dones col-year y2025">193</td><td class="dones col-year y2024">191</td><td class="dones col-year y2023">188</td><td class="dones col-year y2022">169</td><td class="dones col-year y2021">168</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p class="table-footer">Font: Institut d'Estadística de les Illes Balears (IBESTAT)</p>
+
+</div>
+
+<script>
+    function toggleYear(year, btn) {
+        btn.classList.toggle('active');
+        const cells = document.querySelectorAll('.y' + year);
+        cells.forEach(c => c.classList.toggle('hidden'));
+    }
+</script>

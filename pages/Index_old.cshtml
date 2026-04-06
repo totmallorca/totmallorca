@@ -1,0 +1,353 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<style>
+    h1 {
+        font-family: 'Baskerville Old Face';
+        color: #eee9e2;
+        font-size: 40px;
+        position:relative;
+        left:230px;
+    }
+    h2 {
+        font-family: 'Baskerville Old Face';
+        color: #34495E;
+        font-size: 100px;
+        position: relative;
+        left: 70px;
+    }
+    h3 {
+        font-family: 'Baskerville Old Face';
+        color: #eee9e2; 
+        font-size: 20px;
+        text-align: center;
+    }
+
+    h4 {
+        font-family: 'Baskerville Old Face';
+        color: #eee9e2;
+        font-size: 40px;
+        text-align: center;
+    }
+
+    h5 {
+        font-family: 'Lucida Calligraphy';
+        color: #eee9e2;
+        font-size: 15px;
+        text-align: right;
+    }
+    p {
+        font-family: 'Lucida Calligraphy'; 
+        color: white;
+        font-size: 20px;
+        text-align: center;
+    }
+</style>
+
+<style>
+    /* Estilo para la imagen de fondo en toda la página */
+    /*body {
+        background-image: url('/images/Bandera_del_Reino_de_Mallorca.jpg');
+        background-size: cover; /* Hace que la imagen cubra toda la pantalla */
+       /* background-position: center; /* Centra la imagen */
+      /*  background-repeat: no-repeat; /* Evita que la imagen se repita */
+       /* background-attachment: fixed; /* Fija la imagen para que no se desplace con el contenido */
+    /*}
+
+    /* Opcional: Ajusta el color y estilo del texto para que sea legible */
+    z2 {
+        color: #513ce7;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Añade una sombra para resaltar el texto */
+        position: relative;
+        left: 70px;
+        font-family: 'Baskerville Old Face';
+        font-size: 100px;
+    }
+
+    z1 {
+        color: #FFFF00;
+        font-family: 'Baskerville Old Face';
+        font-size: 100px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Añade una sombra para resaltar el texto */
+        position: relative;
+        left: 70px;
+    }
+
+    z3 {
+        color: #FF0000;
+        font-family: 'Baskerville Old Face';
+        font-size: 100px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Añade una sombra para resaltar el texto */
+        position: relative;
+        left: 70px;
+    }
+</style>
+
+<z2><strong><u>T</u></strong></z2><z1><strong><u>OT</u></strong></z1><z3><strong><u> M</u></strong></z3><z1><strong><u>AL</u></strong></z1><z3><strong><u>L</u></strong></z3><z1><strong><u>OR</u></strong></z1><z3><strong><u>C</u></strong></z3><z1><strong><u>A</u></strong></z1>
+<h1>Sa Roqueta a ses teves màns</h1>
+
+<style>
+    /* Asegura que el body ocupe toda la altura de la ventana */
+    body {
+        margin: 0; /* Elimina el margen predeterminado */
+        padding: 0; /* Elimina el relleno predeterminado */
+        position: relative; /* Hace que el body sea el contenedor para posicionar el recuadro */
+        height: 98vh; /* Altura del body al 100% de la ventana */
+        /*width: 184vh;*/
+    }
+
+    /* Estilo para el recuadro */
+    .recuadro {
+        border: 5px solid #3498DB; /* Borde azul */
+        padding: 20px; /* Espaciado interno */
+        background-color: rgba(0, 0, 0, 0.3); /* Fondo */
+        border-radius: 8px; /* Bordes redondeados */
+        width: 30%; /* Ancho del recuadro */
+        text-align: center; /* Alinea el texto dentro del recuadro */
+        position: absolute; /* Posiciona el recuadro de forma absoluta */
+        bottom: 0; /* Coloca el recuadro en el fondo */
+        left: 50%; /* Centra el recuadro horizontalmente */
+        transform: translateX(-50%); /* Ajuste para centrar completamente el recuadro */
+        line-height: 1; /* Ajusta el espaciado entre líneas */
+        
+    }
+</style>
+
+<!-- Recuadro con texto -->
+<div class="recuadro">
+    
+    <h4><u>Ai! Mallorca el cor m'encises</u></h4>
+    <p>Ai! Mallorca el cor m'encises</p>
+    <p>Amb ton blau del cel tan bell</p>
+    <P>Amb tes platjes remoroses</P>
+    <p>Que escomou l'ambat lleuger</p>
+    <p>Amb les flors de tes praderes</p>
+    <p>Amb lo cant de los aucells</p>
+    <p>De los cel é el paradis</p>
+    <p>Per a mi semblança n'ets</p>
+    <p></p>
+    <p>Ai! Mallorca si te deixo,</p>
+    <p>D'anyorança moriré.</p>
+    <p>Bella terra n'es Mallorca,</p>
+    <P>Q'es Mallorca ric verger.</P>
+    <h5>Tomás Forteza</h5>
+</div>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Lateral Desplegable</title>
+    <style>
+        /* Estilos básicos para el body */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        /* Menú lateral derecho */
+        .interactivo {
+            width: 250px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 2px solid #3498DB;
+            border-radius: 8px;
+            height: auto; /* Altura completa de la ventana */
+            width: auto; /* Ancho del menú lateral */
+            position: fixed; /* Fijado al lado derecho */
+            right: 0; /* Coloca el menú en el lado derecho */
+            padding-top: 20px;
+        }
+        /* Enlaces del menú */
+        .interactivo a {
+            display: block;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-family: Georgia;
+            line-height: 0.3; /* Ajusta el espaciado entre líneas */
+        }
+
+        .interactivo a:hover {
+            background-color: #575757; /* Color al pasar el mouse */
+        }
+        /* Contenido principal */
+        .main-content {
+            margin-right: 250px; /* Empuja el contenido hacia la izquierda para evitar el menú */
+            padding: 20px;
+            width: calc(100% - 250px); /* Ajusta el ancho para el contenido */
+        }
+
+        /* Estilo para el menú lateral */
+        .sidebar {
+            height: auto; /* Ocupa toda la altura de la pantalla */
+            width: auto; /* Ancho del menú lateral */
+            background-color: rgba(0, 0, 0, 0.3); /* Color de fondo */
+            border: 2px solid #3498DB;
+            border-radius: 8px;
+            position: fixed; /* Fijo en la pantalla */
+            padding-top: 20px;
+            color: white;
+            top: 20; /* Pegado al borde superior */
+            left: 0; /* Pegado al borde izquierdo */
+            
+        }
+
+        /* Estilos de los items del menú */
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            position: relative;
+            cursor: pointer;
+            line-height: 0.3; /* Ajusta el espaciado entre líneas */
+            font-family: Georgia;
+        }
+
+        .sidebar a:hover {
+            background-color: #2980B9; /* Cambio de color al pasar el mouse */
+        }
+
+        /* Estilos para el recuadro del submenú */
+        .submenu-box {
+            margin-left: 205px; /* Posición a la derecha del menú principal */
+            width: auto; /* Ancho del recuadro del submenú */
+            background-color: #5DADE2;
+            position: fixed;
+            top: 15;
+            left: 20px;
+            height: auto;
+            padding-top: 20px;
+            color: white;
+            display: none; /* Oculto por defecto */
+            max-height: 300px; /* Establece la altura máxima del contenedor */
+            overflow-y: auto; /* Activa el scroll vertical */
+        }
+
+        .submenu-box a {
+            font-size: 16px;
+            font-family: Georgia;
+            padding: 10px 20px;
+            display: block;
+            color: white;
+            text-decoration: none;
+            line-height: 0.3; /* Ajusta el espaciado entre líneas */
+        }
+
+        .submenu-box a:hover {
+            background-color: #3498DB; /* Color al pasar el mouse en submenú */
+            
+        }
+    </style>
+</head>
+<body>
+   
+    <!-- Menú lateral derecho -->
+    <div class="interactivo">
+        <a href="/About">Aquesta pàgina</a>
+        <a href="/Contact">Contacta</a>
+        <a href="/Chat">Chat</a>
+        <a href="/GPS">GPS</a>
+    </div>
+
+    <!-- Menú lateral principal -->
+    <div class="sidebar">
+        <a href="#" onclick="toggleSubmenu('submenu1')">Pobles</a>
+        <!--<a href="@Url.Page("/Estadisticas")">Estadistiques de població</a>-->
+        <a href="#" onclick="toggleSubmenu('submenu2')">Estadisticas de població</a>
+        <!--<a href="#" onclick="toggleSubmenu('submenu3')">Opción 3</a>-->
+    </div>
+
+    <!-- Recuadro de submenú (inicialmente oculto) -->
+    <div id="submenu1" class="submenu-box">
+        <a href="@Url.Page("/Pobles/Alaró")">Alaró</a>
+        <a href="@Url.Page("/Pobles/Alcudia")">Alcudia</a>
+        <a href="@Url.Page("/Pobles/Algaida")">Algaida</a>
+        <a href="@Url.Page("/Pobles/Andratx")">Andratx</a>
+        <a href="@Url.Page("/Pobles/Ariany")">Ariany</a>
+        <a href="@Url.Page("/Pobles/Arta")">Artà</a>
+        <a href="@Url.Page("/Pobles/Banyalbufar")">Banyalbufar</a>
+        <a href="@Url.Page("/Pobles/Binissalem")">Binissalem</a>
+        <a href="@Url.Page("/Pobles/Buger")">Buger</a>
+        <a href="@Url.Page("/Pobles/Bunyola")">Bunyola</a>
+        <a href="@Url.Page("/Pobles/Calvià")">Calvià</a>
+        <a href="@Url.Page("/Pobles/Campanet")">Campanet</a>
+        <a href="@Url.Page("/Pobles/Campos")">Campos</a>
+        <a href="@Url.Page("/Pobles/Capdepera")">Capdepera</a>
+        <a href="@Url.Page("/Pobles/Consell")">Consell</a>
+        <a href="@Url.Page("/Pobles/Costitx")">Costitx</a>
+        <a href="@Url.Page("/Pobles/Deia")">Deià</a>
+        <a href="@Url.Page("/Pobles/Escorca")">Escorca</a>
+        <a href="@Url.Page("/Pobles/Esporles")">Esporles</a>
+        <a href="@Url.Page("/Pobles/Estellencs")">Estellencs</a>
+        <a href="@Url.Page("/Pobles/Felanitx")">Felanitx</a>
+        <a href="@Url.Page("/Pobles/Fornalutx")">Fornalutx</a>
+        <a href="@Url.Page("/Pobles/Inca")">Inca</a>
+        <a href="@Url.Page("/Pobles/Lloret")">Lloret de Vistalegre</a>
+        <a href="@Url.Page("/Pobles/Lloseta")">Lloseta</a>
+        <a href="@Url.Page("/Pobles/Llubi")">Llubí</a>
+        <a href="@Url.Page("/Pobles/Llucmajor")">Llucmajor</a>
+        <a href="@Url.Page("/Pobles/Manacor")">Manacor</a>
+        <a href="@Url.Page("/Pobles/Mancor")">Mancor de la Vall</a>
+        <a href="@Url.Page("/Pobles/Maria")">Maria de la Salut</a>
+        <a href="@Url.Page("/Pobles/Marratxi")">Marratxí</a>
+        <a href="@Url.Page("/Pobles/Montuiri")">Montuiri</a>
+        <a href="@Url.Page("/Pobles/Muro")">Muro</a>
+        <a href="@Url.Page("/Pobles/Palma")">Palma</a>
+        <a href="@Url.Page("/Pobles/Petra")">Petra</a>
+        <a href="@Url.Page("/Pobles/Pollença")">Pollença</a>
+        <a href="@Url.Page("/Pobles/Porreres")">Porreres</a>
+        <a href="@Url.Page("/Pobles/Puigpunyent")">Puigpunyent</a>
+        <a href="@Url.Page("/Pobles/Pobla")">Sa Pobla</a>
+        <a href="@Url.Page("/Pobles/Joan")">Sant Joan</a>
+        <a href="@Url.Page("/Pobles/Cardassar")">Sant Llorenç des Cardassar</a>
+        <a href="@Url.Page("/Pobles/Eugenia")">Santa Eugenia</a>
+        <a href="@Url.Page("/Pobles/Margalida")">Santa Margalida</a>
+        <a href="@Url.Page("/Pobles/StaMaria")">Santa Maria del Camí</a>
+        <a href="@Url.Page("/Pobles/Santanyi")">Santanyi</a>
+        <a href="@Url.Page("/Pobles/Selva")">Selva</a>
+        <a href="@Url.Page("/Pobles/Sencelles")">Sencelles</a>
+        <a href="@Url.Page("/Pobles/Salines")">Ses Salines</a>
+        <a href="@Url.Page("/Pobles/Sineu")">Sineu</a>
+        <a href="@Url.Page("/Pobles/Soller")">Soller</a>
+        <a href="@Url.Page("/Pobles/Servera")">Son Servera</a>
+        <a href="@Url.Page("/Pobles/Valldemossa")">Valldemossa</a>
+        <a href="@Url.Page("/Pobles/Villafranca")">Villafranca de Bonany</a>
+    </div>
+
+    <div id="submenu2" class="submenu-box">
+        <a href="@Url.Page("/Estadisticas")">Població resident</a>
+        <a href="#link2-2">Link 2-2</a>
+    </div>
+
+    <div id="submenu3" class="submenu-box">
+        <a href="#link3-1">Link 3-1</a>
+        <a href="#link3-2">Link 3-2</a>
+        <a href="#link3-3">Link 3-3</a>
+    </div>
+    <script>
+        // Función para alternar la visibilidad del submenú 
+        function toggleSubmenu(id) {
+            // Seleccionar el submenú correspondiente
+            const submenu = document.getElementById(id);
+
+            // Verificar si el submenú ya está visible
+            if (submenu.style.display === 'block') {
+                // Si está visible, ocultarlo
+                submenu.style.display = 'none';
+            } else {
+                // Ocultar todos los submenús
+                document.querySelectorAll('.submenu-box').forEach(function (submenu) {
+                    submenu.style.display = 'none';
+                });
+                // Mostrar el submenú seleccionado
+                submenu.style.display = 'block';
+            }
+        }
+    </script>
+
+   
+</body>
