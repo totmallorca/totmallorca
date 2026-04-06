@@ -1,0 +1,125 @@
+﻿@page
+@model rutes_alaroModel
+@{
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rutes Senderisme</title>
+        <style>
+            /* Contenidor de columnes que ocupa tota la pantalla */
+            .contenidor-columnes {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                width: 100%;
+                height: calc(100vh - 80px);
+            }
+
+            /* Estil de cada columna */
+            .columna {
+                text-align: center;
+                background-color: burlywood;
+                border-right: 3px solid #ccc;
+                height: 100%;
+            }
+
+                /* Eliminar la línia de la darrera columna */
+                .columna:last-child {
+                    border-right: none;
+                }
+
+            /* Estil del títol */
+            h1 {
+                text-align: center;
+                font-size: 50px;
+                font-family: Georgia, serif;
+                color: mediumblue;
+                margin: 20px 0;
+            }
+            h2{
+                text-align:center;
+                font-size: 25px;
+                font-family: 'Times New Roman';
+                color: brown;
+            }
+            p{
+                font-family: 'Baskerville Old Face';
+                font-size: 20px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+    
+        <h1>RUTES DE SENDERISME</h1>
+        <div class="contenidor-columnes">
+            <div class="columna"><h2><u>Castell d'Alaró</u></h2>
+                <p>🚶- 10 kms. Anada i tornada</p>
+                <p>⏱️ - 3-4 hores</p>
+                <p>📈 - moderada</p>
+                <p>📤 - Plaça de la Vila o Font de l'escudella</p>
+                <hr />
+                <p>Sa Ruta mes popular i emblemàtica. Desde sa possesió d'es Verger.
+                Sa pujada ofereix vistes espectaculars de Mallorca i de sa Costa.
+                A dalt des castell sa troba s'ermita de sa Mare de Deu des Refugi i restes de muralles antigues.
+                Després es pot dinar a nes Restaurant es Verger famos per sa seva paletilla de xot a nes forn.</p>
+                <hr />
+                <p><u>Castell d'Alaró</u></p>
+                <p>Fortalesa medieval amb llegendes històriques com la de Cabrit i Bassa.</p>
+                <P><u>Possessió des Verger</u></P>
+                <p>Una de ses mes conegudes per sa seva gastronomia</p>
+                <p><u>Hermita de sa Mare de Desu des Refugi</u></p>
+                <p>Petit refugi situat a nes cim.</p>
+            </div>
+            <div class="columna"><h2><u>Orient per es Freu</u></h2>
+                <p>🚶- 8 kms. Anada</p>
+                <p>⏱️ - 2.5 hores anada</p>
+                <p>📈 - fàcil</p>
+                <p>📤 - Camí des raiguer</p>
+                <hr />
+                <p>Conecta Alaró amb es petit poble d'Orient, lloc tranquil i acollidor envoltat de natura
+                Passam per es Pas de Freu, pas de montanya amb un pont de pedrai una cascada molt coneguda durant s'época de plujes.
+                A satardor o hivern es pot veura sa cascada en plena activitat.
+                Ideal per families</p>
+                <hr />
+                <p><u>Pas des Freu</u></p>
+                <p>Lloc idilic amb una cascada que surt a s´hivern</p>
+            </div>
+            <div class="columna"><h2><u>Comuna d'Alaró</u></h2>
+                <p>🚶- 7 kms. circular</p>
+                <p>⏱️ - 2-3 hores</p>
+                <p>📈 - fàcil - modereada</p>
+                <p>📤 - Plaça de la Vila</p>
+                <hr />
+                <p>Extensa zona forestal amb alzinars, pins i zones de descnas.
+                Permet disfrutar d'una paseig per la natura en vistes espectacualrs sobre es pla de Mallorca.
+                Trobarem antigues cases de neu i forns de calç.
+                Ideal per un picnis i per fer una camianda relatxada</P>
+                <hr />
+                <p><u>Cases de Neu</u></p>
+                <p>Cases antigues per ammagatzemar neu durant s'hivern</p>
+            </div>
+            <div class="columna"><h2><u>Puig d'Alcadena</u></h2>
+                <p>🚶- 12 kms.</p>
+                <p>⏱️ - 4-5 hores</p>
+                <p>📈 - modereada - alta></p>
+                <p>📤 - Alaró</p>
+                <hr />
+                <p>Puig d'Alcadena a 815 mts.</p>
+                <p>Continua fins es Puig de S'Alcadena.</p>
+                <p>Vistes espetaculars de sa Serra de Tramuntana i des Puig de la Tossals verds.</p>
+                <p>Ruta exigent pero amb unes viste que valen la pena</p>
+                <hr />
+                <p><u></u></p>
+            </div>
+            <div class="columna"><h2><u>Salt des Cans</u></h2>
+                <p>🚶- 7 kms. anada i tornada</p>
+                <p>⏱️ - 2 hores</p>
+                <p>📈 - fàcil</p>
+                <p>📤 - Alaró</p>
+                <hr />
+                <p>Cascada natural espectacular, sobre tot després de ses plujes.</p>
+                <p>Passam per camis forestals disfrutant de sa tranquilitat de sa natura.</p>
+            </div>
+        </div>
+    </body>
+}
