@@ -1,0 +1,283 @@
+@page
+@model mallorca.Pages.Historia.EpocaTalayoticaModel
+@{
+    ViewData["Title"] = "ÈPOCA TALAIÒTICA";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+    :root {
+        --gold: #C9A84C;
+        --gold-light: #E8C97A;
+        --gold-dark: #8B6914;
+        --crimson: #8B1A1A;
+        --crimson-light: #C0392B;
+        --deep-blue: #0A1628;
+        --cream: #F5EDD6;
+        --text-light: #e8dcc8;
+    }
+
+    /* ── RESET LAYOUT — habilitar scroll en aquesta pàgina ── */
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+        min-height: 100% !important;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        background: linear-gradient(160deg, #060e1c 0%, #0d1f3c 50%, #091528 100%);
+        background-attachment: fixed;
+        font-family: 'EB Garamond', Georgia, serif;
+        color: var(--text-light);
+        min-height: 100vh;
+    }
+
+    /* Scrollbar elegant */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--deep-blue); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+
+    /* ── BACKGROUND STARS ── */
+    .page-bg {
+        position: fixed; inset: 0; z-index: 0; pointer-events: none;
+        background:
+            radial-gradient(ellipse at 20% 30%, rgba(27,108,168,0.12) 0%, transparent 60%),
+            radial-gradient(ellipse at 80% 70%, rgba(201,168,76,0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 100%, rgba(139,26,26,0.10) 0%, transparent 60%);
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+        position: relative; z-index: 10;
+        background: linear-gradient(135deg, #040a14 0%, #0d1f3c 50%, #040a14 100%);
+        border-bottom: 2px solid var(--gold);
+        padding: 28px 40px 22px;
+        text-align: center;
+        box-shadow: 0 4px 30px rgba(0,0,0,0.6);
+    }
+    .page-header::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        opacity: 0.7;
+    }
+
+    .header-ornament {
+        font-size: 13px; color: var(--gold); opacity: 0.5;
+        letter-spacing: 14px; margin-bottom: 10px; display: block;
+    }
+    .page-header h1 {
+        font-family: 'Cinzel Decorative', serif;
+        font-size: clamp(24px, 4vw, 46px);
+        font-weight: 700;
+        color: var(--gold-light);
+        letter-spacing: 0.18em;
+        text-shadow: 0 0 40px rgba(201,168,76,0.35), 0 2px 8px rgba(0,0,0,0.9);
+        line-height: 1.2;
+    }
+    .header-sub {
+        font-family: 'Cinzel', serif;
+        font-size: 11px; letter-spacing: 0.4em;
+        color: rgba(201,168,76,0.5);
+        text-transform: uppercase; margin-top: 10px;
+    }
+    .header-divider {
+        width: 45%; height: 1px; margin: 14px auto 0;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        opacity: 0.35;
+    }
+
+    /* ── BACK LINK ── */
+    .back-wrap {
+        position: relative; z-index: 5;
+        max-width: 860px; margin: 0 auto;
+        padding: 20px 24px 0;
+    }
+    .back-link {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.15em;
+        text-transform: uppercase; color: var(--gold-light); text-decoration: none;
+        padding: 7px 16px; border: 1px solid rgba(201,168,76,0.25);
+        border-radius: 2px; background: rgba(6,14,28,0.6); backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    }
+    .back-link:hover { background: rgba(201,168,76,0.12); border-color: var(--gold); color: #fff; }
+
+    /* ── CONTENT WRAP ── */
+    .page-wrap {
+        position: relative; z-index: 5;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 24px 24px 80px;
+    }
+
+    /* ── ARTICLE CARD ── */
+    .article-card {
+        background: rgba(6,14,28,0.55);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(201,168,76,0.2);
+        border-radius: 3px;
+        padding: 44px 52px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+
+    /* ── LEAD paragraph ── */
+    .lead-p {
+        font-size: clamp(15px, 1.6vw, 19px);
+        font-style: italic;
+        color: var(--gold-light);
+        border-left: 3px solid var(--crimson-light);
+        padding-left: 20px;
+        margin-bottom: 28px;
+        line-height: 1.8;
+        text-indent: 0 !important;
+    }
+
+    /* ── Normal paragraphs ── */
+    .article-card p {
+        font-size: clamp(14px, 1.35vw, 17px);
+        line-height: 1.9;
+        color: #d8ccb4;
+        margin-bottom: 20px;
+        text-align: justify;
+        text-indent: 1.8em;
+    }
+    .article-card p:last-of-type { margin-bottom: 0; }
+
+    /* ── SECTION SEPARATOR ── */
+    .sep {
+        text-align: center;
+        color: var(--gold); font-size: 13px;
+        letter-spacing: 14px; opacity: 0.45;
+        margin: 32px 0;
+    }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+        position: relative;
+        background: rgba(139,26,26,0.12);
+        border: 1px solid rgba(201,168,76,0.2);
+        border-left: 3px solid var(--gold);
+        border-radius: 0 2px 2px 0;
+        padding: 18px 28px 18px 36px;
+        margin: 28px 0;
+        font-style: italic;
+        font-size: clamp(14px, 1.4vw, 17px);
+        color: var(--gold-light);
+        line-height: 1.75;
+        text-indent: 0 !important;
+    }
+    .pull-quote::before {
+        content: '\201C';
+        position: absolute; top: -4px; left: 10px;
+        font-size: 52px; color: var(--gold); opacity: 0.3;
+        font-family: Georgia, serif; line-height: 1;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+        font-family: 'Cinzel', serif;
+        font-size: clamp(12px, 1.3vw, 15px);
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--gold);
+        text-align: center;
+        margin: 36px 0 22px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(201,168,76,0.2);
+        position: relative;
+    }
+    .section-title::before, .section-title::after {
+        content: '✦'; color: var(--gold); opacity: 0.5;
+        font-size: 10px; margin: 0 10px;
+    }
+
+    /* ── ARTICLE FOOTER ── */
+    .article-footer {
+        text-align: right;
+        margin-top: 36px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(201,168,76,0.2);
+        font-family: 'Cinzel', serif;
+        font-size: 10px; letter-spacing: 0.2em;
+        color: rgba(201,168,76,0.35);
+        text-transform: uppercase;
+    }
+
+    /* ── BOTTOM GOLD BAR ── */
+    .bottom-bar {
+        position: fixed; bottom: 0; left: 0; right: 0; height: 3px; z-index: 100;
+        background: linear-gradient(90deg, transparent, var(--crimson), var(--gold), var(--crimson), transparent);
+        opacity: 0.5;
+    }
+</style>
+
+<div class="page-bg"></div>
+<div class="bottom-bar"></div>
+
+<!-- HEADER -->
+<div class="page-header">
+    <span class="header-ornament">✦ ✦ ✦</span>
+    <h1>ÈPOCA TALAIÒTICA</h1>
+    <p class="header-sub">Història de Mallorca &nbsp;·&nbsp; 1300 – 123 a.C.</p>
+    <div class="header-divider"></div>
+</div>
+
+<!-- BACK -->
+<div class="back-wrap">
+    <a href="javascript:history.back()" class="back-link">← Tornar</a>
+</div>
+
+<!-- CONTENT -->
+<div class="page-wrap">
+    <div class="article-card">
+
+        <p class="lead-p">Imagina per un moment que no pots menjar. Que sa fam apreta es teu estómac mentres mires un tros de menjar penjant de sa branca d'un arbre. Tens una fona a sa mà i una pedra a nes teus peus. Fins que no endivinis a s'objectiu, no hi haurà menjar. Així és com es forjaven es homes a sa Mallorca d'ara fa tres mil anys. No era un joc, era una qüestió de supervivència extrema que acabaria creant es guerrers més temuts des Mediterrani.</p>
+
+        <p>Benvinguts a un viatge a nes cor de sa nostra identitat. Avui caminarem entre muralles ciclòpies i torres de pedra que desafien es pas des segles. Descobrirem sa cultura talaiòtica, un enigma arquitectònic que continua custodiant es paisatges de Mallorca i que, tenint en compta sa seva magnitud, guarda secrets que sa ciència encara no ha pogut desxifrar completament.</p>
+
+        <p>Durant dècades, hem excavat més de mil cinc-cents jaciments en aquestes illes. Combinant ses cròniques antigues amb ses troballes més recents, intentarem entendre per què aquestes estructures rompen totes ses regles de lo que creiem saber sobre sa navegació i sa guerra en el món antic. Perquè a Mallorca, ses pedres no estan mudes; ses pedres xerren si sabem escoltar-les.</p>
+
+        <div class="sep">✦ ✦ ✦</div>
+
+        <div class="section-title">Els Orígens</div>
+
+        <p>Es primer gran misteri és es silenci. Mentres sa resta de la Mediterrània ja era un bullidor de comerç i civilització, Mallorca va esperar mil anys més en un estrany letargi. Es primers pobladors van arribar tard, cap es tercer mil·lenni abans de Crist, duguent amb ells una cultura megalítica de pedres verticals. Però va ser cap es final de s'Edat des Bronze quan alguna cosa va canviar radicalment.</p>
+
+        <p>No sabem si va ser una evolució interna o s'arribada de nous habitants, però s'illa es va transformar. Es petits assentaments van ser abandonats i substituïts per poblats monumentals articulats al voltant d'una estructura pública imponent: es talaiot. Aquestes torres, que donen nom a tota una època, s'alçaven en punts estratègics, sempre en llocs elevats i enfora de sa costa.</p>
+
+        <div class="pull-quote">
+            Des de lo alt d'un talaiot, s'horitzó es domina per complet. Era s'ull que ho veia tot. Però aquí sorgeix sa gran pregunta que encara avui divideix es experts: Per a què servien realment? Eren fortaleses militars, grans comunals o temples sagrats on es realitzaven rituals que avui no podem imaginar?
+        </div>
+
+        <p>Lo més sorprenent d'aquests antics mallorquins era sa seva relació amb s'entorn. Vivien envoltats de mar, però s'esquena sempre la tenien girada cap a ell. Eren agricultors i ramaders que conreaven cereals i criaven ovelles i cabres. Curiosament, s'arqueologia mos diu que sa pràctica de sa pesca era pràcticament nul·la. Es talaiòtics miraven cap a s'interior de sa seva terra, protegint es seus recursos hídrics i es seus pastures des de ses seves talaies de pedra.</p>
+
+        <p>Si sercam un lloc on aquest misteri es faci tangible, hem d'anar al sud, a sa necròpolis de Capocorb Vell. És un poblat emblemàtic però profundament atípic. A diferència de sa majoria de talaiots circulars que esquitxen s'illa, aquí trobam torres quadrades. Ses seves murades i les seves vivendes xerren d'una comunitat organitzada, capaç de modificar es seu entorn durant segles, resistint fins i tot s'arribada des romans i des musulmans.</p>
+
+        <div class="sep">✦ ✦ ✦</div>
+
+        <div class="section-title">Els Foners Balears</div>
+
+        <p>Però si hi hagué qualque cosa que va posar Mallorca a nes mapa del món antic, va ser sa pedra i sa fona. Es foners balears eren mercenaris d'elit, homos entrenats des de sa infància per a una precisió letal. Ses cròniques expliquen que, quan ses legions de Roma es van acostar a ses nostres costes, van haver de forrar es seus barcos amb cuir. Ses pedres tirades per es mallorquins colpejaven es casc de fusta amb tal força que amenaçaven d'enfonsar ses embarcacions abans que poguessin tocar terra.</p>
+
+        <p>Aquells guerrers que van ser un mal de cap per a s'imperi van acabar convertint-se en sa seva millor carta militar. Amb sa conquesta romana s'any cent vint-i-tres abans de Crist, va començar un procés d'aculturació. Es talaiots van deixar de construir-se, però no van desaparèixer. Es van quedar allà, com a fites simbòliques d'un passat que es negava a ser oblidat, mentre sa ceràmica importada i el vi púnic començaven a omplir ses cases circulars des pobles.</p>
+
+        <div class="sep">✦ ✦ ✦</div>
+
+        <div class="section-title">El Llegat</div>
+
+        <div class="pull-quote">
+            En un món d'imperis expansius, ells van triar una personalitat marcada i única. No miraven a la mar per fugir o per conquerir, sinó per protegir un estil de vida que definia qui eren.
+        </div>
+
+        <p>Avui, quan caminant per sa Serra de Tramuntana o per es plans del sud, aquelles torres de cinc metres encara són allà, vigilant un paisatge que ells mateixos van humanitzar fa quatre mil·lennis. Són s'arrel més profunda de Mallorca, una lliçó de resistència i adaptació que encara queda gravada a cada carreu col·locat sense morter.</p>
+
+        <p>Mentres aquestes pedres segueixin en peu, s'enigma talaiòtic continuarà desafiant ses nostres respostes i recordant-nos que, molt abans des turisme i de sa modernitat, hi va haver un poble que va aprendre a dominar sa pedra per protegir sa seva identitat. Un poble que, cubert per s'ombra de ses seves torres, va forjar es caràcter d'una illa que mai no ha deixat de mirar cap a ses seves pròpies arrels.</p>
+
+        <div class="article-footer">Tot Mallorca &nbsp;·&nbsp; Història &nbsp;·&nbsp; Època Talaiòtica</div>
+
+    </div>
+</div>
