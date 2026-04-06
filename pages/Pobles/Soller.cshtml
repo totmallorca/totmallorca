@@ -1,0 +1,277 @@
+﻿@page
+
+@model SollerModel
+
+<style>
+    /* Reinicia los estilos predeterminados del navegador */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        width: 100%; /* Ocupa todo el ancho de la ventana */
+        height: 100%; /* Ocupa todo el alto de la ventana */
+    }
+    /* Ejemplo de fondo y contenido */
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+    /* Estilo para el contenedor de la imagen */
+    .soller-container {
+        display: flex;
+        justify-content: center; /* Centra horizontalmente */
+        height: 100%; /* Ocupa toda la altura de la ventana */
+    }
+    /* Estilo para redimensionar la imagen */
+    .escud-soller {
+        width: auto; /* Cambia el ancho según tus necesidades */
+        height: auto; /* Mantiene la proporción de la imagen */
+        max-width: 100px; /* Ajusta el ancho máximo */
+        max-height: 100px; /* Ajusta la altura máxima */
+    }
+
+    .title {
+        margin-top: 20px; /* Espacio entre la imagen y el título */
+        font-size: 1.5rem; /* Tamaño del texto */
+        color: darkred; /* Color del texto */
+        font-family: 'Georgia Pro'; /* Fuente */
+        justify-content: center;
+        display: flex;
+        font-weight: bold;
+    }
+    /* Estilo para la línea */
+    .line {
+        width: 100%; /* Ocupa todo el ancho de la página */
+        height: 2px; /* Grosor de la línea */
+        background-color: #333; /* Color de la línea */
+        margin: 20px 0; /* Espaciado arriba y abajo */
+    }
+</style>
+<body>
+    <!-- Imagen con clase para ajustarla -->
+    <div class="soller-container">
+        <img src="/Images/Escudo_de_Sóller.png" class="escud-soller">
+    </div>
+    <div class="title"><u>S O L L E R</u></div>
+    <div class="line"></div>
+</body>
+<!-- Recuadro per informació des poble -->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuadro Pegado al Lateral Izquierdo</title>
+    <style>
+        p {
+            font-family: 'Baskerville Old Face';
+            font-size: 18px;
+            line-height: 0.2;
+        }
+
+        dades {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 15px;
+            color: brown;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        apartats {
+            font-family: 'Baskerville Old Face';
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            color: crimson;
+            font: bold;
+            line-height: 1.5;
+        }
+        /* Reinicia los estilos predeterminados del navegador */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%; /* Ocupa todo el ancho de la ventana */
+            height: 100%; /* Ocupa todo el alto de la ventana */
+        }
+
+        /* Fondo del body */
+        body {
+            font-family: 'Baskerville Old Face'; /* Fuente */
+        }
+
+        /* Recuadro */
+        .recuadro {
+            top: 250px; /* Centrado verticalmente */
+            width: 50%; /* Ancho del recuadro */
+            height: auto;
+            padding: 20px; /* Espaciado interno del texto */
+            color: black; /* Color del texto */
+            border-radius: 5px; /* Bordes redondeados */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Sombra opcional */
+            <!-- text-align: center; -->
+            justify-content: center; /* Centra horizontalmente */
+            position: absolute; /* Posiciona el recuadro de forma absoluta */
+            left: 50%; /* Centra el recuadro horizontalmente */
+            transform: translateX(-50%); /* Ajuste para centrar completamente el recuadro */
+            line-height: 0.3; /* Ajusta el espaciado entre líneas */
+        }
+    </style>
+</head>
+<body>
+    <!-- Recuadro con texto -->
+    <div class="recuadro">
+        <p></p>
+        <p><dades><u>EXTENSIO:</u> ha</dades></p>
+        <p><dades><u></u></dades></p>
+        <p><dades><u></u></dades></p>
+        <p><dades><u>LIMITS:</u></dades></p>
+        <p><dades><u>PATRO:</u></dades></p>
+        <p><dades><u>MERCAT SEMANAL:</u></dades></p>
+        <p></p><dades><u>GENTILICI:</u></dades>
+        <p></p><apartats><u>UN POC D'HISTÒRIA</u></apartats>
+        <p style="font-weight:bold"><u></u></p>
+
+    </div>
+</body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imágenes en Margen Izquierdo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Contenedor general para las imágenes */
+        .contenedor {
+            position: absolute;
+            left: 20px; /* Márgen izquierdo */
+            top: 280px; /* Márgen superior */
+            display: flex;
+            flex-direction: column; /* Alinea las imágenes una encima de la otra */
+            gap: 10px; /* Espaciado entre las imágenes */
+        }
+
+        /* Estilo de las imágenes */
+        .imagen {
+            position: relative;
+            width: 200px; /* Ajusta el ancho de las imágenes */
+            height: auto;
+            cursor: pointer; /* Cursor para indicar que es clickeable */
+        }
+
+        /* Texto sobre la imagen */
+        .texto-sobre-imagen {
+            position: absolute;
+            top: 50%; /* Centra el texto verticalmente */
+            left: 50%; /* Centra el texto horizontalmente */
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+
+        /* Contenedor de cada imagen */
+        .contenedor-imagen {
+            position: relative;
+        }
+
+        /* links derechos */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .link-dreta {
+            position: absolute;
+            top: 280px;
+            right: 20px;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+            .link-dreta:hover {
+                background-color: #0056b3;
+            }
+    </style>
+    <script>
+        function abrirVentanaImagen(url, anchoDefault, altoDefault) {
+            // Crear un objeto de imagen para cargar la imagen y obtener sus dimensiones
+            const img = new Image();
+            img.src = url;
+
+            img.onload = () => {
+                // Obtener las dimensiones reales de la imagen
+                const ancho = img.naturalWidth || anchoDefault;
+                const alto = img.naturalHeight || altoDefault;
+
+                // Calcular la posición para centrar la ventana emergente
+                const left = (window.screen.width / 2) - (ancho / 2);
+                const top = (window.screen.height / 2) - (alto / 2);
+
+                // Abrir una nueva ventana centrada con el tamaño de la imagen
+                window.open(
+                    url,
+                    'popup',
+                    `width=${ancho},height=${alto},left=${left},top=${top},resizable=no,scrollbars=no`
+                );
+            };
+
+            img.onerror = () => {
+                // Si hay un error al cargar la imagen, abrir la ventana con las dimensiones por defecto
+                const left = (window.screen.width / 2) - (anchoDefault / 2);
+                const top = (window.screen.height / 2) - (altoDefault / 2);
+
+                window.open(
+                    url,
+                    'popup',
+                    `width=${anchoDefault},height=${altoDefault},left=${left},top=${top},resizable=no,scrollbars=no`
+                );
+            };
+        }
+    </script>
+
+</head>
+<body>
+    <!-- Contenedor general -->
+    <div class="contenedor">
+        <!-- Primera imagen -->
+        <div class="contenedor-imagen">
+            <a href="javascript:void(0);"
+               onclick="abrirVentanaImagen('/Images/50.jpg', 700, 500)">
+                <img src="/Images/50.jpg" alt="Localització de Soller" class="imagen">
+                <div class="texto-sobre-imagen">LOCALITZACIO</div>
+            </a>
+        </div>
+
+        <!-- Segunda imagen -->
+        <div class="contenedor-imagen">
+            <a href="javascript:void(0);"
+               onclick="abrirVentanaImagen('/Images/Soller.png', 700, 500)">
+                <img src="/Images/Soller.png" alt="Plano des poble" class="imagen">
+                <div class="texto-sobre-imagen">PLANO</div>
+            </a>
+        </div>
+    </div>
+</body>
+
+<!-- links derechos -->
+<body>
+    <a href="@Url.Page("/rutes/rutes_soller")" class="link-dreta">RUTES SENDERISME</a>
+</body>
+
+</html>
+

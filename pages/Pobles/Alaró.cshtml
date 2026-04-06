@@ -1,0 +1,442 @@
+@page
+@model AlaroModel
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+    :root {
+        --gold: #C9A84C;
+        --gold-light: #E8C97A;
+        --gold-dark: #8B6914;
+        --crimson: #8B1A1A;
+        --crimson-light: #C0392B;
+        --deep-blue: #0A1628;
+        --cream: #F5EDD6;
+        --text-dark: #1a0a00;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+        min-height: 100%;
+        background: linear-gradient(160deg, #f5ead0 0%, #ede0c4 50%, #e8d8b8 100%);
+        font-family: 'EB Garamond', Georgia, serif;
+        color: var(--text-dark);
+    }
+
+    body::before {
+        content: '';
+        position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        background:
+            radial-gradient(ellipse at top left, rgba(139,26,26,0.07) 0%, transparent 55%),
+            radial-gradient(ellipse at bottom right, rgba(201,168,76,0.09) 0%, transparent 55%);
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #e8d8b8; }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+
+    /* ── HEADER ── */
+    .page-header {
+        position: relative; z-index: 10;
+        background: linear-gradient(135deg, #0d0500 0%, #2a0a00 45%, #0d0500 100%);
+        border-bottom: 3px solid var(--gold);
+        padding: 20px 32px 16px;
+        display: flex; align-items: center; gap: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    }
+    .page-header::after {
+        content: '';
+        position: absolute; bottom: -1px; left: 10%; right: 10%; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        opacity: 0.4;
+    }
+    .header-escudo {
+        width: 76px; height: 76px; object-fit: contain; flex-shrink: 0;
+        filter: drop-shadow(0 2px 10px rgba(0,0,0,0.7));
+    }
+    .header-text { flex: 1; }
+    .header-title {
+        font-family: 'Cinzel Decorative', serif;
+        font-size: clamp(26px, 4vw, 46px);
+        font-weight: 700; color: var(--gold-light); letter-spacing: 0.28em;
+        text-shadow: 0 0 30px rgba(201,168,76,0.4), 0 2px 8px rgba(0,0,0,0.9);
+        line-height: 1;
+    }
+    .header-subtitle {
+        font-family: 'Cinzel', serif; font-size: 11px;
+        letter-spacing: 0.3em; color: rgba(201,168,76,0.55);
+        text-transform: uppercase; margin-top: 7px;
+    }
+    .header-divider {
+        width: 100%; height: 1px; margin-top: 10px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.35;
+    }
+
+    /* ── 3-COLUMN LAYOUT: 40% | 20% | 40% ── */
+    .page-layout {
+        position: relative; z-index: 1;
+        display: grid;
+        grid-template-columns: 40% 20% 40%;
+        min-height: calc(100vh - 120px);
+        padding: 0;
+        max-width: 100%;
+    }
+
+    /* ══ COL LEFT (40%) — dades + història ══ */
+    .col-left {
+        padding: 28px 24px 40px 28px;
+        border-right: 1px solid rgba(201,168,76,0.2);
+        background: rgba(255,255,255,0.25);
+    }
+
+    .back-link {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.15em;
+        text-transform: uppercase; color: var(--crimson); text-decoration: none;
+        padding: 6px 14px; border: 1px solid rgba(139,26,26,0.25);
+        border-radius: 2px; background: rgba(255,255,255,0.5);
+        transition: all 0.2s ease; margin-bottom: 20px; display: inline-block;
+    }
+    .back-link:hover { background: rgba(139,26,26,0.08); border-color: var(--crimson); }
+
+    /* Dades card */
+    .dades-card {
+        background: linear-gradient(135deg, rgba(139,26,26,0.05), rgba(255,255,255,0.75));
+        border: 1px solid rgba(139,26,26,0.18);
+        border-left: 4px solid var(--crimson);
+        border-radius: 3px;
+        padding: 16px 18px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 16px;
+    }
+    .dada-item {
+        font-size: 14px; line-height: 1.4; color: var(--text-dark);
+        border-bottom: 1px dotted rgba(139,26,26,0.12); padding-bottom: 5px;
+    }
+    .dada-label {
+        font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--crimson); display: block; margin-bottom: 1px;
+    }
+    .dada-item.full { grid-column: 1 / -1; }
+
+    /* Història */
+    .historia-section {
+        background: rgba(255,255,255,0.55);
+        border: 1px solid rgba(201,168,76,0.2);
+        border-radius: 3px; padding: 18px 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .section-title {
+        font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.2em;
+        text-transform: uppercase; color: var(--crimson); text-align: center;
+        margin-bottom: 14px; padding-bottom: 8px;
+        border-bottom: 1px solid rgba(201,168,76,0.25);
+    }
+    .section-title::before, .section-title::after { content: '✦'; color: var(--gold); font-size: 9px; margin: 0 8px; opacity: 0.7; }
+    .subsection-title {
+        font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.1em;
+        color: var(--crimson-light); margin: 14px 0 8px;
+    }
+    .talaiot-item { margin-bottom: 12px; padding-left: 14px; border-left: 2px solid rgba(201,168,76,0.3); }
+    .talaiot-name {
+        font-size: 14px; font-weight: 600; color: var(--text-dark);
+        text-decoration: underline; text-decoration-color: rgba(201,168,76,0.4);
+        margin-bottom: 3px;
+    }
+    .talaiot-name::before { content: '→ '; color: var(--gold-dark); }
+    .talaiot-desc { font-size: 14px; line-height: 1.6; color: #2a1500; text-indent: 16px; }
+    .historia-text { font-size: 14.5px; line-height: 1.75; color: #2a1500; text-align: justify; margin-bottom: 8px; }
+    .gold-sep { text-align: center; color: var(--gold); font-size: 12px; letter-spacing: 10px; opacity: 0.45; margin: 8px 0 12px; }
+
+    /* ══ COL CENTER (20%) — maps + links ══ */
+    .col-center {
+        padding: 28px 14px;
+        display: flex; flex-direction: column;
+        align-items: center; gap: 14px;
+        border-right: 1px solid rgba(201,168,76,0.2);
+        background: rgba(201,168,76,0.04);
+    }
+
+    .col-center-title {
+        font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.2em;
+        text-transform: uppercase; color: rgba(139,26,26,0.5);
+        text-align: center; width: 100%;
+    }
+
+    .img-card {
+        position: relative; border-radius: 4px; overflow: hidden;
+        border: 2px solid rgba(201,168,76,0.35);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+        cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+        background: #000; width: 100%;
+    }
+    .img-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.35); border-color: var(--gold); }
+    .img-card img { width: 100%; height: 100px; object-fit: cover; display: block; transition: opacity 0.3s; }
+    .img-card:hover img { opacity: 0.85; }
+    .img-label {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        padding: 16px 8px 6px;
+        font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.18em;
+        color: var(--gold-light); text-align: center; text-transform: uppercase;
+    }
+
+    /* Separador center */
+    .center-sep {
+        width: 60%; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        opacity: 0.3;
+    }
+
+    .action-btn {
+        display: block; font-family: 'Cinzel', serif; font-size: 10px;
+        letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+        text-align: center; padding: 12px 10px; border-radius: 3px;
+        transition: all 0.3s ease; line-height: 1.4; width: 100%;
+    }
+    .btn-rutes {
+        background: linear-gradient(135deg, var(--crimson), #6b1010);
+        color: var(--gold-light); border: 1px solid rgba(201,168,76,0.25);
+        box-shadow: 0 3px 10px rgba(139,26,26,0.3);
+    }
+    .btn-rutes:hover { background: linear-gradient(135deg, #a01f1f, #8b1a1a); transform: translateY(-2px); color: #fff; }
+    .btn-arribar {
+        background: linear-gradient(135deg, #1a3a5c, #0d2240);
+        color: var(--gold-light); border: 1px solid rgba(201,168,76,0.25);
+        box-shadow: 0 3px 10px rgba(10,22,40,0.3);
+    }
+    .btn-arribar:hover { background: linear-gradient(135deg, #244d7a, #1a3a5c); transform: translateY(-2px); color: #fff; }
+    .btn-icon { display: block; font-size: 18px; margin-bottom: 5px; }
+
+    /* ══ COL RIGHT (40%) — text poètic ══ */
+    .col-right {
+        padding: 28px 28px 40px 24px;
+        background: rgba(10,22,40,0.92);
+        position: relative; overflow: hidden;
+    }
+
+    /* Decoració de fons dreta */
+    .col-right::before {
+        content: '';
+        position: absolute; inset: 0; pointer-events: none;
+        background:
+            radial-gradient(ellipse at 30% 20%, rgba(201,168,76,0.06) 0%, transparent 60%),
+            radial-gradient(ellipse at 80% 80%, rgba(139,26,26,0.08) 0%, transparent 50%);
+    }
+
+    .poem-header {
+        position: relative; z-index: 1;
+        margin-bottom: 22px; padding-bottom: 14px;
+        border-bottom: 1px solid rgba(201,168,76,0.25);
+    }
+    .poem-title {
+        font-family: 'Cinzel Decorative', serif;
+        font-size: clamp(15px, 2vw, 22px);
+        color: var(--gold-light);
+        letter-spacing: 0.08em; line-height: 1.3;
+        text-shadow: 0 0 20px rgba(201,168,76,0.3);
+    }
+    .poem-subtitle {
+        font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em;
+        color: rgba(201,168,76,0.45); text-transform: uppercase; margin-top: 6px;
+    }
+
+    .poem-body {
+        position: relative; z-index: 1;
+    }
+    .poem-body p {
+        font-family: 'EB Garamond', Georgia, serif;
+        font-size: clamp(13.5px, 1.3vw, 16px);
+        line-height: 1.85; color: #c8bfa8;
+        text-align: justify; margin-bottom: 14px;
+        text-indent: 1.2em;
+    }
+    .poem-body p:first-of-type {
+        text-indent: 0;
+        font-style: italic; color: var(--gold-light);
+        font-size: clamp(14px, 1.4vw, 17px);
+        border-left: 2px solid var(--crimson-light);
+        padding-left: 14px; margin-bottom: 18px;
+    }
+
+    .poem-ornament {
+        position: relative; z-index: 1;
+        text-align: center; color: var(--gold);
+        font-size: 12px; letter-spacing: 12px; opacity: 0.35;
+        margin: 18px 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @@media (max-width: 1024px) {
+        .page-layout { grid-template-columns: 1fr; }
+        .col-left, .col-center, .col-right { border: none; padding: 20px; }
+        .col-center { flex-direction: row; flex-wrap: wrap; }
+        .col-right { background: linear-gradient(135deg, #0d1f3c, #091528); }
+        .dades-card { grid-template-columns: 1fr 1fr; }
+    }
+</style>
+
+<!-- HEADER -->
+<div class="page-header">
+    <img src="/Images/Escudo_de_Alaró.jpg" class="header-escudo" alt="Escudo de Alaró" />
+    <div class="header-text">
+        <div class="header-title">A L A R Ó</div>
+        <div class="header-subtitle">Vila de Mallorca · Serra de Tramuntana</div>
+        <div class="header-divider"></div>
+    </div>
+</div>
+
+<!-- 3-COLUMN LAYOUT -->
+<div class="page-layout">
+
+    <!-- ══ COL LEFT 40%: dades + història ══ -->
+    <div class="col-left">
+
+        <a href="javascript:history.back()" class="back-link">← Tornar</a>
+
+        <!-- Dades bàsiques -->
+        <div class="dades-card">
+            <div class="dada-item">
+                <span class="dada-label">Extensió</span>4.570 ha
+            </div>
+            <div class="dada-item">
+                <span class="dada-label">Patró</span>Sant Roc (16 d'agost)
+            </div>
+            <div class="dada-item">
+                <span class="dada-label">Puig d'Alaró</span>822 m
+            </div>
+            <div class="dada-item">
+                <span class="dada-label">Mercat setmanal</span>Dissabtes
+            </div>
+            <div class="dada-item">
+                <span class="dada-label">Puig de s'Alcadena</span>815 m
+            </div>
+            <div class="dada-item">
+                <span class="dada-label">Gentilici</span>Alaroner / Alaronera
+            </div>
+            <div class="dada-item full">
+                <span class="dada-label">Límits</span>
+                Escorca, Mancor, Lloseta, Binissalem, Consell, Santa Maria, Bunyola
+            </div>
+        </div>
+
+        <!-- Història -->
+        <div class="historia-section">
+            <div class="section-title">Un poc d'història</div>
+
+            <div class="subsection-title">Reminiscències talaiòtiques</div>
+
+            <div class="talaiot-item">
+                <div class="talaiot-name">Es Picó i Son Palou</div>
+                <p class="talaiot-desc">Dos talaiots de s'edat des Ferro. Es primer en bastant bon estat de 9m × 11m i de 4,5 m d'alçada.</p>
+            </div>
+            <div class="talaiot-item">
+                <div class="talaiot-name">S'Alcadena o Es Claper des Gegant</div>
+                <p class="talaiot-desc">Ovalat de 8 m de diàmetre per 3 m d'alçada. Un des costats està cobert per un pedragal (popularment un "Claper").</p>
+            </div>
+            <div class="talaiot-item">
+                <div class="talaiot-name">Bànyols (Puig de s'Apit)</div>
+                <p class="talaiot-desc">Planta circular. Una de ses pedres té 2,5 m de longitud, 1,4 m d'alçada i 1,1 m d'ampla. De 11 m de diàmetre i 3,3 m d'alçada.</p>
+            </div>
+            <div class="talaiot-item">
+                <div class="talaiot-name">Can Cabrit o S'Era Vella</div>
+                <p class="talaiot-desc">Dues estructures de planta circular i dues de planta quadrangular.</p>
+            </div>
+
+            <div class="gold-sep">✦ ✦ ✦</div>
+
+            <div class="subsection-title">Bàrbars i Bizantins</div>
+            <p class="historia-text">Alaró, de excepcional posició defensiva. Sa Bastida i es Castell d'Alaró (ss. IV i V) són mostres defensives de s'època. Des dels segles posteriors a sa caiguda de s'imperi romà no queden referències de s'invasió i assentament vàndal. Un des elements més significatius que es conserven de s'època àrab és <em>"Sa Font de Ses Artigues"</em> amb es seu pou original i es traçat de sa sèquia.</p>
+
+            <div class="gold-sep">✦ ✦ ✦</div>
+
+            <div class="subsection-title">Conquesta i repoblament</div>
+            <p class="historia-text">Encara que sa conquesta la varen sustentar es potentats barcelonins, altres poblacions com Provença (França) o Ligúria (Itàlia) també hi participaren. Un cop va caure sa ciutat el 31 de desembre de 1229, en Jaume I va esperar a sa segona expedició el 1231 per intentar prendre es Castell d'Alaró. Així ses terres d'Alaró van passar del districte de Canarossa i es seu senyor va ser es Vescomte de Bearn.</p>
+        </div>
+
+    </div>
+
+    <!-- ══ COL CENTER 20%: mapes + botons ══ -->
+    <div class="col-center">
+
+        <p class="col-center-title">Mapes</p>
+
+        <a href="javascript:void(0);" onclick="abrirVentana('/Images/1.jpg', 700, 500)" class="img-card">
+            <img src="/Images/1.jpg" alt="Localització d'Alaró" />
+            <div class="img-label">📍 Localització</div>
+        </a>
+
+        <a href="javascript:void(0);" onclick="abrirVentana('/Images/Alaro.png', 700, 500)" class="img-card">
+            <img src="/Images/Alaro.png" alt="Plano des poble" />
+            <div class="img-label">🗺 Plano</div>
+        </a>
+
+        <div class="center-sep"></div>
+
+        <a href="@Url.Page("/rutes/rutes_alaro")" class="action-btn btn-rutes">
+            <span class="btn-icon">🥾</span>Rutes Senderisme
+        </a>
+
+        <a href="https://www.google.com/maps/dir/?api=1&origin=My+Location&destination=Alaro,+Mallorca"
+           target="_blank" class="action-btn btn-arribar">
+            <span class="btn-icon">🧭</span>Com Arribar
+        </a>
+
+    </div>
+
+    <!-- ══ COL RIGHT 40%: text poètic ══ -->
+    <div class="col-right">
+
+        <div class="poem-header">
+            <div class="poem-title">Alaró: un murmuri<br>entre muntanyes</div>
+            <div class="poem-subtitle">✦ &nbsp; Impressions del poble &nbsp; ✦</div>
+        </div>
+
+        <div class="poem-body">
+            <p>Hi ha pobles que se recorren, i altres que se senten. Alaró pertany a aquests darrers. Situat a nes cor de Mallorca, a nes peus de sa imponent Serra de Tramuntana, aquest petit racó pareix que està suspès en es temps, com si cada carrer guardàs un secret i cada pedra tengués memòria.</p>
+
+            <div class="poem-ornament">— ✦ —</div>
+
+            <p>Quan clareja, sa llum cau suau sobre ses seves cases de tons càlids, i es silenci sa barreja amb es so llunyà de sa natura. Caminar per Alaró és deixar-se dur sense pressa, descobrir places tranquil·les on sa vida transcorr sense estridències, on es ritme el marquen ses converses pausades i es pas lent des dies.</p>
+
+            <p>Sobre es poble, vigilant i etern, s'alça es Castell d'Alaró. No és només una fortalesa de pedra, sinó un símbol de resistència i història. Pujar-hi és més que una excursió; és un viatge cap es passat, una manera d'entendre s'illa des de dalt, amb es vent com a company i s'horitzó obrint-se en totes direccions.</p>
+
+            <div class="poem-ornament">— ✦ —</div>
+
+            <p>Es paisatge que envolta Alaró és generós i serè. Alzines centenàries, camins de terra i muntanyes que dibuixen es cel creen un escenari que convida a perdre's, a escoltar, a respirar. Aquí, sa natura no és un decorat, sinó una part essencial de sa vida.</p>
+
+            <p>Però Alaró no és només es seu entorn. També és sa seva gent, ses seves tradicions, sa seva manera de celebrar sa vida. A ses seves festes, es poble es transforma, s'umpl de música, de rialles, de trobades. És aquest moment quan es percebeix amb més força aquest vincle invisible que uneix es qui viuen aquí amb sa seva terra.</p>
+
+            <div class="poem-ornament">— ✦ —</div>
+
+            <p>Sa gastronomia, senzilla i honesta, també xerra d'aquesta identitat. Sabors que neixen des que és proper, des que és quotidià, de receptes que han passat de generació en generació i que conserven es sabor de lo que és autèntic.</p>
+
+            <p>Alaró no serca impressionar. La seva bellesa està en allò discret, en allò veritable, en aquesta calma que envolta es visitant gairebé sense que se doni compta. És un lloc que no s'imposa, sinó que s'ofereix, com un xiuxiueig entre muntanyes que convida a quedar-se una poc més.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function abrirVentana(url, w, h) {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+            const ancho = img.naturalWidth || w;
+            const alto  = img.naturalHeight || h;
+            const left  = Math.round((screen.width  - ancho) / 2);
+            const top   = Math.round((screen.height - alto)  / 2);
+            window.open(url, 'popup', `width=${ancho},height=${alto},left=${left},top=${top},resizable=no,scrollbars=no`);
+        };
+        img.onerror = () => {
+            window.open(url, 'popup', `width=${w},height=${h},resizable=no,scrollbars=no`);
+        };
+    }
+</script>
